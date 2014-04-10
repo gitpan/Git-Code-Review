@@ -1,0 +1,88 @@
+==================================================
+Changes from 2013-04-10 00:00:00 +0000 to present.
+==================================================
+
+----------------------------------------
+version 0.1 at 2014-04-10 20:47:01 +0000
+----------------------------------------
+
+  Change: af68e98711a8fad9fa9d4cfd7b2820e8d9dc90f9
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-10 22:42:22 +0000
+
+    Fixes for automated tests to not fail. 
+
+  Change: 8a91765c642471093ecfa55e11b9448e60b744dc
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-10 22:31:44 +0000
+
+    Improved documentation for the initial push to GitHub. Version set to
+    0.1, documentation generated. 
+
+  Change: 35f7be02814f0b6b459994910b6657277f32579f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-10 21:41:16 +0000
+
+    New commands
+
+    list -> replaces concerns and shows details about commits picked
+
+    fixed -> flagged commits moved to approved
+
+    pick -> grab a commit to do something with it
+
+    Removed command concerns. Improvements to
+    Git::Code::Review::Utilities. 
+
+  Change: ef93d4cc255b7977feb971a127de63423c1e82f9
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-02 22:45:13 +0000
+
+    Added the concerns command to view commits with concerns. 
+
+  Change: cbc8940419189daaf6067b5517141af20fe6bc50
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-02 22:20:15 +0000
+
+    Functional selection process with just a time-based selection
+    criteria 
+
+  Change: 4464704ec55682a8768df3ce48c95f17e3081d2c
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-02 17:45:03 +0000
+
+    Initialization script complete and settled on App::Cmd 
+
+  Change: 59806c0f6e7f00aa00fc1db826140622c883b8fc
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-03-06 22:19:32 +0000
+
+    Pull in Getopt::Long so we can start parsing options from the cli 
+
+  Change: 7d6ac115ad0051ad0337f121cba81dd0ce2ca44f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-03-06 22:12:16 +0000
+
+    Moved git-code-review to bin/ and made Dist::Zilla do the right thing 
+
+  Change: 6a284420380a78449a5f96c6a005b675ef6764d0
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-03-06 22:03:38 +0000
+
+    Pod::Weaver configuration and placeholder for git-code-review 
+
+  Change: f3215e586686c66c98169a2e6856c59aa4635bcd
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-03-06 21:53:49 +0000
+
+    First dzil build successful. 
+
+  Change: c435d4023ff6e3625440fccafa9c91cfe3ba6ffd
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-03-06 21:52:20 +0000
+
+    Initial skeleton for Git::Code::Review 
+
+================
+End of releases.
+================
