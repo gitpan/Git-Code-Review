@@ -15,6 +15,7 @@ lib/Git/Code/Review/Command/init.pm
 lib/Git/Code/Review/Command/list.pm
 lib/Git/Code/Review/Command/pick.pm
 lib/Git/Code/Review/Command/select.pm
+lib/Git/Code/Review/Tutorial.pm
 lib/Git/Code/Review/Utilities.pm
 t/00-compile.t
 weaver.ini

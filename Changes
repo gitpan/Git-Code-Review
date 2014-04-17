@@ -1,10 +1,28 @@
 ==================================================
-Changes from 2013-04-10 00:00:00 +0000 to present.
+Changes from 2013-04-17 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.1 at 2014-04-10 20:47:01 +0000
+version 0.2 at 2014-04-17 20:28:33 +0000
 ----------------------------------------
+
+  Change: e757f47faea15071a92f6bdbca758f0b6a228ea6
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-04-17 22:28:21 +0000
+
+    Version bump to 0.2 
+
+  Change: a11dd8b097cfc5226aa2a5bead9fb1912e0366c0
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-04-17 22:27:33 +0000
+
+    Minor bugfixes and the start of the Tutorial. 
+
+  Change: e2d9a4f6da8285a6c4eb5b61448bb2a9e6f31951
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-04-10 22:47:57 +0000
+
+    Archived 0.1 release. 
 
   Change: af68e98711a8fad9fa9d4cfd7b2820e8d9dc90f9
   Author: Brad Lhotsky <brad.lhotsky@booking.com>

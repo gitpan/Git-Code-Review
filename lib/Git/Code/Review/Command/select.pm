@@ -17,7 +17,8 @@ my $START = strftime('%F',localtime(time-(3600*24*30)));
 
 # Dispatch Table for Searches
 my %SEARCH = (
-    path => \&log_params_path,
+    path   => \&log_params_path,
+    author => \&log_params_author,
 );
 
 sub opt_spec {
@@ -170,6 +171,11 @@ sub log_params_path {
     return @{ $opts }, '--', $term;
 }
 
+sub log_params_author {
+    my($opts,$term) = @_;
+    return @{ $opts }, '--author', $term;
+}
+
 1;
 
 __END__
@@ -184,7 +190,7 @@ Git::Code::Review::Command::select - Perform commit selection
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 AUTHOR
 

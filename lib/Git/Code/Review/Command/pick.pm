@@ -97,7 +97,7 @@ sub resign {
 
     my $reason = prompt("Why are you resigning for this commit? ", menu => [
         q{No experience with systems covered.},
-        q{My eyes are bleeding.},
+        q{I am the author.},
         q{other},
     ]);
     if( $reason eq 'other' ) {
@@ -172,7 +172,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 AUTHOR
 

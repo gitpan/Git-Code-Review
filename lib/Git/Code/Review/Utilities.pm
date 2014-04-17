@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.1'; # VERSION
+our $VERSION = '0.2'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -94,7 +94,7 @@ sub gcr_repo {
         gcr_config();
         $repo = Git::Repository->new( work_tree => $PATHS{$type} );
     };
-    die "invalid repository/path : $type = $PATHS{$type}" unless defined $repo;
+    die "invalid repository/path($type=$PATHS{$type}) : $@" unless defined $repo;
     return $REPOS{$type} = $repo;
 }
 
@@ -438,7 +438,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 FUNCTIONS
 
