@@ -6,6 +6,7 @@ use warnings;
 use CLI::Helpers qw(:all);
 use Git::Code::Review::Utilities qw(:all);
 use Git::Code::Review -command;
+use Git::Code::Review::Notify;
 use POSIX qw(strftime);
 use YAML;
 
@@ -14,6 +15,7 @@ my $AUDITDIR = gcr_dir();
 my %CFG = gcr_config();
 my $TODAY = strftime('%F',localtime);
 my $START = strftime('%F',localtime(time-(3600*24*30)));
+my $PROFILE = gcr_profile();
 
 # Dispatch Table for Searches
 my %SEARCH = (
@@ -27,8 +29,8 @@ sub opt_spec {
         ['reason|r=s', "Reason for the selection, ie '2014-01 Review'",  ],
         ['since|s=s',  "Start date                     (Default: $START)",    { default => $START } ],
         ['until|u=s',  "End date                       (Default: $TODAY)",    { default => $TODAY } ],
-        ['number|n=i', "Number of commits,  -1 for all (Default: 25)",        { default => 25 } ],
-        ['profile|p=s',"Selection profile to use       (Default: 'default')", { default => 'default'} ],
+        ['number=i',   "Number of commits,  -1 for all (Default: 25)",        { default => 25 } ],
+        ['all',        "Select all mathching commits",],
     );
 }
 
@@ -51,6 +53,8 @@ sub description {
 sub execute {
     my ($cmd,$opt,$args) = @_;
 
+    debug_var($opt);
+
     # Git Log Options
     my @options = (
         q{--pretty=format:%H %ci},      # output formatting
@@ -61,8 +65,8 @@ sub execute {
 
     # We need a reason for this commit
     my $message =  exists $opt->{reason} && length $opt->{reason} > 10 ? $opt->{reason}
-                : prompt sprintf("Please provide the reason for the selection%s:", exists $opt->{reason} ? '(10+ chars)' : ''),
-                    validate => { "10+ characters, please" => sub { length $_ > 10 } };
+                : prompt(sprintf("Please provide the reason for the selection%s:", exists $opt->{reason} ? '(10+ chars)' : ''),
+                    validate => { "10+ characters, please" => sub { length $_ > 10 } });
 
     # Repositories
     my $source = gcr_repo('source');
@@ -74,7 +78,7 @@ sub execute {
     # Get the pool of commits
     my %pool = ();
     my %matches = ();
-    my %search = load_profile($opt->{profile});
+    my %search = load_profile($PROFILE);
     foreach my $type (keys %search) {
         next unless ref $search{$type} eq 'ARRAY';
         output("Searching by $type.");
@@ -99,23 +103,44 @@ sub execute {
         debug({indent=>1,color=>"yellow"},"~ $search => $matches{$search}");
     }
     # Perform the pick!
-    my @pool = keys %pool;
     my @picks=();
-    while( @picks < $opt->{number} && @pool ) {
-        my $index = int(rand(scalar(@pool)));
-        push @picks, splice @pool, $index, 1;
-        debug({indent=>1}, "picked $picks[-1]");
+    my $method = 'random';
+    if( $opt->{all} ) {
+        @picks = grep { !gcr_commit_exists($_) } keys %pool;
+        debug({indent=>1}, "picked $_") for @picks;
+        output({color=>scalar(@picks) ? 'green' : 'red'},sprintf('%s PICKED: %d', scalar(@picks) ? '+' : '!', scalar(@picks)));
+        $method = 'all';
     }
-    my $got_enough = scalar(@picks) == $opt->{number} ? 1 : 0;
-    output({color=>$got_enough ? 'green' : 'red'},sprintf('%s PICKED: %d of %d', $got_enough ? '+' : '!', scalar(@picks), $opt->{number}));
+    else {
+        my @pool = keys %pool;
+        while( @picks < $opt->{number} && @pool ) {
+            my $index = int(rand(scalar(@pool)));
+            my($pick) = splice @pool, $index, 1;
+            if( gcr_commit_exists($pick) ) {
+                debug({indent=>1,color=>'yellow'}, "Commit $pick has already been added to the audit, skipping.");
+                next;
+            }
+            push @picks, $pick;
+            debug({indent=>1}, "picked $pick");
+        }
+        my $got_enough = scalar(@picks) == $opt->{number} ? 1 : 0;
+        $method = 'all' if !$got_enough;
+        output({color=>$got_enough ? 'green' : 'red'},sprintf('%s PICKED: %d of %d', $got_enough ? '+' : '!', scalar(@picks), $opt->{number}));
+    }
+
+    # We don't have enough
+    if(@picks < 1) {
+        output({color=>'green'}, "All commits for this selection have already been added to the audit!");
+        exit(0);
+    }
 
     # Place the patches in the appropriate directory
     if( !exists $opt->{noop} ) {
         gcr_reset();
         foreach my $sha1 (@picks) {
             # Date Path by Year/Month
-            my @sub = split /\-/, (split /\s+/, $pool{$sha1}->{date})[0];
-            pop @sub;
+            my @sub = (split /\-/, (split /\s+/, $pool{$sha1}->{date})[0])[0];
+            unshift @sub, $PROFILE;
             push @sub, 'Review';
             my $dir = $AUDITDIR;
             while( @sub ) {
@@ -140,23 +165,54 @@ sub execute {
         }
         my %details = (
             state       => 'select',
+            profile     => $PROFILE,
             reviewer    => $CFG{user},
             criteria    => $opt,
-            selected    => $got_enough ? 'random' : 'all',
+            selected    => $method,
             source_repo => gcr_origin('source'),
             audit_repo  => gcr_origin('audit'),
         );
         my $msg = join("\n", $message, Dump(\%details));
         $audit->run('commit', '-m', $msg);
         gcr_push();
+
+        # Notify
+        Git::Code::Review::Notify::notify(select => {
+            pool => {
+                matches   => \%matches,
+                total     => scalar(keys %pool),
+                selected  => scalar(@picks),
+                selection => [
+                    map { { gcr_commit_info($_) } } @picks
+                ],
+            },
+            reason => $message,
+        });
     }
 }
 
 sub load_profile {
     my ($profile) = @_;
-    my %profile = (
-        path => [qw(**)],
-    );
+    # Select everything if there's no profiles
+    my %profile = ();
+
+    # Selection Config for the Profile
+    my $select_file = File::Spec->catfile($AUDITDIR, qw(.code-review profiles), $PROFILE, 'selection.yaml');
+    if( -f $select_file ) {
+        my $data;
+        my $rc = eval {
+            $data = YAML::LoadFile($select_file);
+            1;
+        };
+        if( $rc == 1 ) {
+           %profile = %{ $data };
+        }
+    }
+    elsif($profile eq 'default') {
+        %profile = ( path => [qw(**)], );
+    }
+    die "error loading selection criteria for $profile" unless scalar(keys %profile);
+
     return wantarray ? %profile : \%profile;
 }
 
@@ -190,7 +246,7 @@ Git::Code::Review::Command::select - Perform commit selection
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 AUTHOR
 

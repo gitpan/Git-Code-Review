@@ -2,9 +2,9 @@ use 5.006;
 use strict;
 use warnings;
 
-# this test was generated with Dist::Zilla::Plugin::Test::Compile 2.040
+# this test was generated with Dist::Zilla::Plugin::Test::Compile 2.043
 
-use Test::More  tests => 10 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 14 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 
 
@@ -12,10 +12,14 @@ my @module_files = (
     'Git/Code/Review.pm',
     'Git/Code/Review/Command/comment.pm',
     'Git/Code/Review/Command/fixed.pm',
+    'Git/Code/Review/Command/info.pm',
     'Git/Code/Review/Command/init.pm',
     'Git/Code/Review/Command/list.pm',
     'Git/Code/Review/Command/pick.pm',
+    'Git/Code/Review/Command/profile.pm',
     'Git/Code/Review/Command/select.pm',
+    'Git/Code/Review/Notify.pm',
+    'Git/Code/Review/Notify/Email.pm',
     'Git/Code/Review/Tutorial.pm',
     'Git/Code/Review/Utilities.pm'
 );
@@ -57,9 +61,9 @@ foreach my $file (@scripts)
 { SKIP: {
     open my $fh, '<', $file or warn("Unable to open $file: $!"), next;
     my $line = <$fh>;
-    close $fh and skip("$file isn't perl", 1) unless $line =~ /^#!.*?\bperl\b\s*(.*)$/;
 
-    my @flags = $1 ? split(/\s+/, $1) : ();
+    close $fh and skip("$file isn't perl", 1) unless $line =~ /^#!\s*(?:\S*perl\S*)((?:\s+-\w*)*)(?:\s*#.*)?$/;
+    my @flags = $1 ? split(' ', $1) : ();
 
     my $stderr = IO::Handle->new;
 

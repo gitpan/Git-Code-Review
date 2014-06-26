@@ -57,9 +57,9 @@ sub execute {
 
     # Grab the URI
     my $repo = exists $opt->{repo} ? $opt->{repo}
-            : prompt "Enter the source repository:", validate => { "need more than 3 characters" => sub { length $_ > 3 } };
+            : prompt("Enter the source repository:", validate => { "need more than 3 characters" => sub { length $_ > 3 } });
     my $branch = exists $opt->{repo} ? $opt->{branch}
-            : prompt "Branch to track (default=master) :", validate => { "need more than 3 characters" => sub { length $_ > 3 } };
+            : prompt("Branch to track (default=master) :", validate => { "need more than 3 characters" => sub { length $_ > 3 } });
 
     # Initialize the sub module
     my $audit = gcr_repo();
@@ -75,6 +75,7 @@ sub execute {
         );
         debug({color=>'yellow'},  "CMD=" . join(' ', $sub->cmdline));
         @out = $sub->final_output();
+        $audit->run(qw(submodule init));
     }
     if($sub->exit != 0) {
         output({stderr=>1,color=>'red'},"Submodule init failed, please try again");
@@ -88,6 +89,7 @@ sub execute {
 
     # Set our config directory for our artifacts;
     gcr_mkdir('.code-review');
+
     my $readme = File::Spec->catfile($AUDITDIR,'.code-review','README');
     if( !-e $readme ) {
         open(my $fh, '>', $readme) or die "cannot create file: $readme";
@@ -122,7 +124,7 @@ Git::Code::Review::Command::init - Initialization hooks for git-code-review comm
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 AUTHOR
 

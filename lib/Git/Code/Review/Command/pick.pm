@@ -6,10 +6,12 @@ use warnings;
 use CLI::Helpers qw(:all);
 use Git::Code::Review::Utilities qw(:all);
 use Git::Code::Review -command;
+use Git::Code::Review::Notify;
 
 # Globals
 my $AUDITDIR = gcr_dir();
 my %CFG = gcr_config();
+my $PROFILE = gcr_profile();
 my %LABELS = (
     approve  => "Approve this commit.",
     concerns => "Raise a concern with this commit.",
@@ -35,7 +37,7 @@ my %_resigned;
 
 sub opt_spec {
     return (
-#        ['noop',       "Just run a sample selection."],
+#        ['noop',       "Take no recorded actions."],
     );
 }
 
@@ -69,10 +71,10 @@ sub execute {
         }
     }
     else {
-        my @picklist = grep { gcr_not_resigned($_) && gcr_not_authored($_) } $audit->run('ls-files', '*Review*');
+        my @picklist = grep { /^$PROFILE/ && gcr_not_resigned($_) && gcr_not_authored($_) } $audit->run('ls-files', '*Review*');
 
         if(!@picklist) {
-            output({color=>'green'},"All reviews completed!");
+            output({color=>'green'},"All reviews completed on profile: $PROFILE!");
             exit 0;
         }
         else {
@@ -156,6 +158,15 @@ sub concerns {
     my $details = prompt("Explain: ", validate => { "Really, not even 10 characters? " => sub { length $_ > 10; } });
     verbose("+ Raising concern with $commit->{base} for $reason");
     gcr_change_state($commit, concerns => { reason => "$reason", message => join "\n",$reasons{$reason},$details });
+
+    # Do notify by email
+    Git::Code::Review::Notify::notify(concerns => {
+        commit => $commit,
+        reason => {
+            short   => $reason,
+            details => $details,
+        },
+    });
 }
 
 1;
@@ -172,7 +183,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 AUTHOR
 

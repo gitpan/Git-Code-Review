@@ -15,7 +15,7 @@ my %CFG = gcr_config();
 
 sub opt_spec {
     return (
-        #    ['noop',       "Just run a sample selection."],
+        #    ['noop',       "Take no recorded actions."],
     );
 }
 
@@ -100,7 +100,7 @@ Git::Code::Review::Command::fixed - Mark a commit previously concerned with appr
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 AUTHOR
 

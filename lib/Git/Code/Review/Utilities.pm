@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.2'; # VERSION
+our $VERSION = '0.3'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -15,6 +15,7 @@ use File::Spec;
 use File::Temp qw(tempfile);
 use YAML;
 use POSIX qw(strftime);
+use Getopt::Long qw(:config pass_through);
 
 # Setup the exporter
 use Sub::Exporter -setup => {
@@ -27,16 +28,29 @@ use Sub::Exporter -setup => {
         gcr_origin
         gcr_reset
         gcr_push
+        gcr_profile
+        gcr_profiles
         gcr_open_editor
         gcr_view_commit
         gcr_change_state
         gcr_not_resigned
         gcr_not_authored
+        gcr_commit_exists
         gcr_commit_info
         gcr_commit_message
         gcr_state_color
     )],
 };
+
+# Global Options
+our $_OPTIONS_PARSED;
+my %_OPTIONS=();
+if( !$_OPTIONS_PARSED ) {
+    GetOptions(\%_OPTIONS,
+        'profile:s'
+    );
+}
+
 
 # Global Lexicals
 my $GITRC = Config::GitLike->new(confname => 'gitconfig');
@@ -44,14 +58,14 @@ my $AUDITDIR = getcwd();
 
 # Editors supported
 my %EDITOR = (
-    vim   => { readonly => [qw(-R)], comment => [] },
-    vi    => { readonly => [qw(-R)], comment => [] },
-    nano  => { readonly => [qw(-R)], comment => [] },
-    emacs => { __POSTFIX__ => 1 , readonly => ['--eval','(setq buffer-read-only t)'], comment => [] },
+    vim   => { readonly => [qw(-R)], modify => [] },
+    vi    => { readonly => [qw(-R)], modify => [] },
+    nano  => { readonly => [qw(-R)], modify => [] },
+    emacs => { __POSTFIX__ => 1 , readonly => ['--eval','(setq buffer-read-only t)'], modify => [] },
 );
 # States of a Commit
 my %STATE = (
-    'locked'   => { type => 'user',   name  => 'Locked',      color => 'cyan' },
+    'locked'   => { type => 'global', name  => 'Locked',      color => 'cyan' },
     'review'   => { type => 'reset',  field => 'review_path', color => 'yellow' },
     'approved' => { type => 'global', name  => 'Approved',    color => 'green' },
     'concerns' => { type => 'global', name  => 'Concerns',    color => 'red' },
@@ -72,10 +86,63 @@ sub gcr_dir {
     return $AUDITDIR;
 }
 
+my $_profile;
+sub gcr_profile {
+    my %checks = (
+        exists => 1,
+        @_
+    );
+    return $_profile if defined $_profile;
+
+    $_profile = $GITRC->get(key => 'code-review.profile');
+    $_profile = $_OPTIONS{profile} if exists $_OPTIONS{profile};
+    if( $_profile && $checks{exists} && $_profile ne 'default' ) {
+        my $profile_dir = File::Spec->catdir($AUDITDIR,qw{.code-review profiles},$_profile);
+        if( !-d $profile_dir ) {
+            output({stderr=>1,color=>'red'}, "Invalid profile: $_profile, missing $profile_dir");
+            exit 1;
+        }
+    }
+    $_profile ||= 'default';
+
+    return $_profile;
+}
+
+
+sub gcr_profiles {
+    my $repo = gcr_repo();
+    my @files = $repo->run('ls-files', '*/selection.yaml');
+    my %profiles = (default => 1);
+    foreach my $file (@files) {
+        my @parts = File::Spec->splitdir($file);
+        $profiles{$parts[-2]} = 1;
+    }
+    return wantarray ? sort keys %profiles : [ sort keys %profiles ];
+}
+
+my %_config = ();
 sub gcr_config {
-    $CFG{user} = $GITRC->get(key => 'user.email');
-    my %config = %CFG;
-    return wantarray ? %config : \%config;
+
+    $CFG{user} = $GITRC->get(key => 'user.email') unless exists $CFG{user};
+
+    if(!keys %_config) {
+        %_config = %CFG;
+        foreach my $sub (qw(notification)) {
+            # Here be dragons.
+            no warnings 'redefine';
+            # Going to overload these subroutines for this block to load files correctly.
+            local *Config::GitLike::global_file = sub { File::Spec->catfile($AUDITDIR,'.code-review',"${sub}.config") };
+            local *Config::GitLike::user_file = sub { File::Spec->catfile($AUDITDIR,qw(.code-review profiles),gcr_profile(exists => 0),"${sub}.config")  };
+            debug("attempting to config for $sub");
+            eval {
+                my $c = Config::GitLike->new(confname => 'notfication');
+                debug({indent=>1}, "successfully loaded configuration.");
+                debug_var($c->dump);
+                $_config{$sub} = { $c->dump };
+            };
+        }
+    }
+    return wantarray ? %_config : { %_config };
 }
 
 sub gcr_is_initialized {
@@ -108,6 +175,7 @@ sub gcr_mkdir {
         mkdir($dir,0755) unless -d $dir;
     }
     debug("audit_mkdir() created $dir");
+    return $dir;
 }
 
 sub gcr_origin {
@@ -147,20 +215,24 @@ sub gcr_reset {
             output({color=>'yellow'},"! Audit working tree is dirty, stashing files");
             $repo->run($type eq 'audit' ? qw{stash -u} : qw(reset --hard));
         }
-        verbose({color=>'cyan'},"= Swithcing to master branch.");
-        eval {
-            $repo->run(qw(checkout -b master));
-        };
-        if( my $err = $@ ) {
-            if( $err !~ /A branch named 'master'/ ) {
-                output({stderr=>1,color=>'red'}, "Error setting to master branch: $err");
-                exit 1;
+        if( $type eq 'audit' ) {
+            verbose({color=>'cyan'},"= Swithcing to master branch.");
+            eval {
+                $repo->run(qw(checkout -b master));
+            };
+            if( my $err = $@ ) {
+                if( $err !~ /A branch named 'master'/ ) {
+                    output({stderr=>1,color=>'red'}, "Error setting to master branch: $err");
+                    exit 1;
+                }
+                debug({color=>'red'}, "!! $err");
             }
-            debug({color=>'red'}, "!! $err");
         }
-        verbose({color=>'cyan'},"+ Initiating pull.");
+        verbose({color=>'cyan'},"+ Initiating pull from $origin");
         local *STDERR = *STDOUT;
-        my @output = $repo->run(qw{pull origin master});
+        my @output = $repo->run(
+            $type eq 'audit' ? qw(pull origin master) : 'pull'
+        );
         debug({color=>'magenta'}, @output);
     }
     else {
@@ -176,6 +248,14 @@ sub gcr_push {
     local *STDERR = *STDOUT;
     debug($audit->run(qw(push origin master)));
 }
+
+sub gcr_commit_exists {
+    my ($object) = @_;
+    my $audit = gcr_repo();
+    my @matches = $audit->run('ls-files', "*$object*");
+    return @matches > 0;
+}
+
 
 sub gcr_commit_info {
     my ($object) = @_;
@@ -195,6 +275,7 @@ sub gcr_commit_info {
         review_time  => 'na',
         state        => _get_state($matches[0]),
         author       => _get_author($matches[0]),
+        profile      => (File::Spec->splitdir($matches[0]))[0],
         reviewer     => $CFG{user},
         source_repo  => gcr_origin('source'),
         audit_repo   => gcr_origin('audit'),
@@ -355,6 +436,7 @@ sub _get_review_path {
     my ($current_path) = @_;
 
     my $base = basename($current_path);
+    my $profile = (File::Spec->splitdir($current_path))[0];
     my $path = File::Spec->catfile($AUDITDIR,$current_path);
     die "get_review_path(): nothing here $path" unless -f $path;
 
@@ -363,7 +445,7 @@ sub _get_review_path {
     my @date = @full[0,1];
     die "Something went wrong in calculating date" unless @date == 2;
 
-    return File::Spec->catfile(@date,'Review',$base);
+    return File::Spec->catfile($profile,@date,'Review',$base);
 }
 
 sub _get_commit_date {
@@ -438,13 +520,26 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.2
+version 0.3
 
 =head1 FUNCTIONS
 
 =head2 gcr_dir()
 
 Returns the audit directory
+
+=head2 gcr_profile(exists => 1)
+
+Return the user's requested profile based on:
+  ~/.gitconfig
+  --profile
+  default
+
+You can override the exists functionality by passing exists => 0;
+
+=head2 gcr_profiles()
+
+Returns a list of profiles with a selection file available
 
 =head2 gcr_config()
 
@@ -472,6 +567,10 @@ Reset the audit directory to origin:master, stash weirdness.  Most operations ca
 
 Push any modifications upstream.
 
+=head2 gcr_commit_exists($sha1 | $partial_sha1 | $path)
+
+Returns 1 if the commit is in the audit already, or 0 otehrwise
+
 =head2 gcr_commit_info($sha1 | $partial_sha1 | $path)
 
 Retrieves all relevant Git::Code::Review details on the commit
@@ -479,7 +578,7 @@ that mataches the string passed in.
 
 =head2 gcr_open_editor( mode => file )
 
-    Mode can be: readonly, comment
+    Mode can be: readonly, modify
 
     File is the file to be opened
 

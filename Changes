@@ -1,10 +1,102 @@
 ==================================================
-Changes from 2013-04-17 00:00:00 +0000 to present.
+Changes from 2013-06-26 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.2 at 2014-04-17 20:28:33 +0000
+version 0.3 at 2014-06-26 10:01:47 +0000
 ----------------------------------------
+
+  Change: 12045f3dfa67c6b51bef0c5fd441ec8f42b3825e
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-06-26 12:01:35 +0000
+
+    Documentation updates for 0.3 relase. 
+
+  Change: 0da7b83a31ded5730970ed61dd0c5b7b11ec0012
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-06-26 12:00:43 +0000
+
+    Bugfix for profile verification and Tutorial updates to include the
+    profile selection. 
+
+  Change: eca523ef61371cabd52ee339eecdea33d0b6d62a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-26 10:36:28 +0000
+
+    Basic profile management. Fixed bug in init for non-master branch
+    submodules Listing now supports profiles. 
+
+  Change: 66f5801ae6556ccd72bf0948cb1a9079ab0dac8c
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-18 20:50:00 +0000
+
+    Fix config merging with Config::GitLike 
+
+  Change: b1a63e24770c80d1ef23989bca68574d1a8bca3f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-17 12:23:43 +0000
+
+    Added gcr_profiles() to list all available selection profiles. 
+
+  Change: 4428109d902fd3c509469f0f86827d2e0e52e8a6
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-16 15:42:56 +0000
+
+    Profile-based resolution for options and templates 
+
+  Change: 750a048d1e3a60a0bc17388c7d2525ff62eb308c
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-16 14:57:10 +0000
+
+    Add automatic checking of valid profile to gcr_profile(); Add info
+    command to display some high level overview of the GCR data. 
+
+  Change: 477b08eb1734de5b3b96edc231702c72cc1cabcb
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-12 23:28:15 +0000
+
+    Moved to profile based selections so multiple profiles maybe used for
+    selection and commit picking in a single audit repository. 
+
+  Change: 49491492e4ec9759d075a355c32bacac06de20b0
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-06 11:48:40 +0000
+
+    Move notifications into a Plugins Hierarchy Reconfigure Email
+    notification to use a plugin. Clean up some comments. 
+
+  Change: 424aa5464c123b1b446a7cef135cae3a56fda771
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-05 11:59:13 +0000
+
+    gcr_commit_exists() to check if a commit is present in this audit.
+    Updated select to make use of gcr_commit_exists() and added --all to
+    select all eligible commits for matches. 
+
+  Change: d9a6bec32664a82d35f2fffe75e57bb3ce869b3a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-05-20 18:23:00 +0000
+
+    Templates are better, begin construction of the MIME::Lite object. 
+
+  Change: 62a16f6dc320745c6027cce10874d64f7fc3d8bd
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-05-19 12:31:46 +0000
+
+    Start of the notification code which will eventually turn into hooks. 
+
+  Change: 68b0c4808a8af22950489bc2b7c34986e73dc57b
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-04-20 14:10:09 +0000
+
+    Include () around calls to prompt as to correct errors on FreeBSD
+    smoke tests. 
+
+  Change: 25993a78115acccc328e3994a74659122ed33c01
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-04-17 22:29:11 +0000
+
+    Archived release 0.2 
 
   Change: e757f47faea15071a92f6bdbca758f0b6a228ea6
   Author: Brad Lhotsky <brad@divisionbyzero.net>
@@ -23,6 +115,10 @@ version 0.2 at 2014-04-17 20:28:33 +0000
   Date : 2014-04-10 22:47:57 +0000
 
     Archived 0.1 release. 
+
+----------------------------------------
+version 0.1 at 2014-04-10 20:42:22 +0000
+----------------------------------------
 
   Change: af68e98711a8fad9fa9d4cfd7b2820e8d9dc90f9
   Author: Brad Lhotsky <brad.lhotsky@booking.com>
