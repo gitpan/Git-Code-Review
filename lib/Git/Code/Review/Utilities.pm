@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.3'; # VERSION
+our $VERSION = '0.3.1'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -234,6 +234,26 @@ sub gcr_reset {
             $type eq 'audit' ? qw(pull origin master) : 'pull'
         );
         debug({color=>'magenta'}, @output);
+
+        # Submodule reset includes incrementing the submodule pointer.
+        if( $type eq 'source' ) {
+            # commit submodule update
+            eval {
+                my $audit = gcr_repo('audit');
+                my %CFG = gcr_config();
+                $audit->run(add => 'source');
+                $audit->run(commit => '-m',
+                    join("\n", "Source Repository Refresh",
+                        Dump({
+                            skip     => 'true',
+                            reviewer => $CFG{user},
+                            action   => 'source_refresh',
+                        })
+                    )
+                );
+                gcr_push();
+            };
+        }
     }
     else {
         die "no remote 'origin' available!";
@@ -520,7 +540,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.3
+version 0.3.1
 
 =head1 FUNCTIONS
 

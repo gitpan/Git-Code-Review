@@ -74,7 +74,7 @@
          "web" : "https://github.com/reyjrar/Git-Code-Review"
       }
    },
-   "version" : "0.3",
+   "version" : "0.3.1",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -358,7 +358,6 @@
                },
                "Dist::Zilla::Role::Git::DirtyFiles" : {
                   "allow_dirty" : [
-                     "Changes",
                      "README.mkdn",
                      "Tutorial.mkdn"
                   ],
@@ -426,7 +425,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "release-0.3",
+                  "tag" : "release-0.3.1",
                   "tag_format" : "release-%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

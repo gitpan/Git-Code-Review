@@ -6,6 +6,7 @@ META.json
 Makefile.PL
 README.mkdn
 bin/git-code-review
+dist.ini
 lib/Git/Code/Review.pm
 lib/Git/Code/Review/Command/comment.pm
 lib/Git/Code/Review/Command/fixed.pm
@@ -20,6 +21,7 @@ lib/Git/Code/Review/Notify/Email.pm
 lib/Git/Code/Review/Tutorial.pm
 lib/Git/Code/Review/Utilities.pm
 t/00-compile.t
+weaver.ini
 xt/author/critic.t
 xt/release/eol.t
 xt/release/pod-coverage.t

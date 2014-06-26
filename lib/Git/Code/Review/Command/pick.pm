@@ -183,7 +183,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.3
+version 0.3.1
 
 =head1 AUTHOR
 

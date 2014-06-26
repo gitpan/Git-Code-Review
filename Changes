@@ -2,8 +2,28 @@
 Changes from 2013-06-26 00:00:00 +0000 to present.
 ==================================================
 
+------------------------------------------
+version 0.3.1 at 2014-06-26 10:20:39 +0000
+------------------------------------------
+
+  Change: d1c8a2ba993adadfcf4c393dbba5f9c21d880ce5
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-06-26 12:19:20 +0000
+
+    BUGFIXES:
+
+    * Packaging bug with Dist::Zilla
+
+    * Fix the submodule not updating the remote. 
+
+  Change: b387e1d49fc3b66457135586071fc769cf2176dd
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-06-26 12:03:44 +0000
+
+    Archive 0.3 relase, fix bug in release process 
+
 ----------------------------------------
-version 0.3 at 2014-06-26 10:01:47 +0000
+version 0.3 at 2014-06-26 10:01:35 +0000
 ----------------------------------------
 
   Change: 12045f3dfa67c6b51bef0c5fd441ec8f42b3825e
