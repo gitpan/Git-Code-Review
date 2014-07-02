@@ -1,9 +1,45 @@
 ==================================================
-Changes from 2013-06-26 00:00:00 +0000 to present.
+Changes from 2013-07-02 00:00:00 +0000 to present.
 ==================================================
 
+----------------------------------------
+version 0.4 at 2014-07-02 20:02:39 +0000
+----------------------------------------
+
+  Change: d87cf4feae4be0ffda8c56682ed703d6305755db
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-02 22:01:55 +0000
+
+    Make note of the selected profile. 
+
+  Change: b77f837010fa182e52a619d83b6f8698c4a08c1a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-02 22:00:10 +0000
+
+    Added --since and --until for displaying commits in the audit between
+    dates. 
+
+  Change: 92e8ab36e3a1d75e0850e7258e01f818bbfcd484
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-02 21:59:18 +0000
+
+    Add Hash::Merge to merge the configurations into one complete
+    configuration. 
+
+  Change: 6ea30bd2793eeb287ed3ec5f9fb4f7bf26ca3734
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-06-26 12:22:24 +0000
+
+    Archive release 
+
+  Change: 0fd5f0f610cc0219480182622ccb227eee050945
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-06-26 12:22:01 +0000
+
+    Fix more workflow bugs in dist.ini 
+
 ------------------------------------------
-version 0.3.1 at 2014-06-26 10:20:39 +0000
+version 0.3.1 at 2014-06-26 10:19:20 +0000
 ------------------------------------------
 
   Change: d1c8a2ba993adadfcf4c393dbba5f9c21d880ce5

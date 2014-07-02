@@ -34,7 +34,8 @@ sub execute {
 
     $config{profiles} = gcr_profiles();
 
-    output({color=>'cyan'},"Git::Code::Review Config:");
+    my $profile = gcr_profile();
+    output({color=>'cyan'},"Git::Code::Review Config for (profile:$profile):");
     output(Dump \%config);
 }
 
@@ -52,7 +53,7 @@ Git::Code::Review::Command::info - Quick overview of the Audit
 
 =head1 VERSION
 
-version 0.3.1
+version 0.4
 
 =head1 AUTHOR
 

@@ -185,7 +185,7 @@ Git::Code::Review::Command::profile - Manage profiles for the code selection
 
 =head1 VERSION
 
-version 0.3.1
+version 0.4
 
 =head1 AUTHOR
 
