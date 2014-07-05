@@ -1,9 +1,76 @@
 ==================================================
-Changes from 2013-07-02 00:00:00 +0000 to present.
+Changes from 2013-07-05 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.4 at 2014-07-02 20:02:39 +0000
+version 0.5 at 2014-07-05 14:20:00 +0000
+----------------------------------------
+
+  Change: eed3bc26576ace8ffeec323e9731db7a8e76b636
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 16:15:25 +0000
+
+    Commands which require initialization check first and die if
+    Git::Code::Review isn't initialized. Make the "zero commits" message
+    a bit more descriptive as to why commits weren't located. Make
+    "--branch" handling a bit dumber but more intuitive. 
+
+  Change: 7e98dc5f86f04a1f2b6f1cefaa15aa5cd3cbc6be
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 15:43:38 +0000
+
+    Merge branch 'dostermeier-patch-1' 
+
+  Change: 5a2be1931b3d87e463579f4959f0a7a81aee5857
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 15:43:02 +0000
+
+    Initialization looks for the presence of tracked files in your
+    repository. Git::Code::Review is designed to track your code in a
+    submodule. This is a little bit of safety to prevent folks from
+    submoduling their code repository in their code repository. 
+
+  Change: 35afdf381748c294cdea25ac04ee5c99e1971a22
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-05 15:43:02 +0000
+
+    Fix typo in Git::Code::Review::Tutorial Add the ability to date
+    constrain the pick process. Document the date selection in the
+    Tutorial. 
+
+  Change: ce35da995308a56caf00c32b2893dcc1e15af62f
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 15:39:12 +0000
+
+    Initialization looks for the presence of tracked files in your
+    repository. Git::Code::Review is designed to track your code in a
+    submodule. This is a little bit of safety to prevent folks from
+    submoduling their code repository in their code repository. 
+
+  Change: 90ca45a2133847e769e8dd24e16964b0b7b4d398
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-02 23:20:43 +0000
+
+    Fix typo in Git::Code::Review::Tutorial Add the ability to date
+    constrain the pick process. Document the date selection in the
+    Tutorial. 
+
+  Change: 278c2ec10e54ec388050e165562cfd9847d03b3b
+  Author: Daniel Ostermeier <daniel.ostermeier@gmail.com>
+  Date : 2014-07-02 23:00:35 +0000
+
+    Update Tutorial.pm
+
+    Typos 
+
+  Change: 13605db632dd5b52ce5b5371e41fcf028ec4a256
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-02 22:03:23 +0000
+
+    Version 0.4 Release 
+
+----------------------------------------
+version 0.4 at 2014-07-02 20:01:55 +0000
 ----------------------------------------
 
   Change: d87cf4feae4be0ffda8c56682ed703d6305755db
@@ -153,6 +220,10 @@ version 0.3 at 2014-06-26 10:01:35 +0000
   Date : 2014-04-17 22:29:11 +0000
 
     Archived release 0.2 
+
+----------------------------------------
+version 0.2 at 2014-04-17 20:28:21 +0000
+----------------------------------------
 
   Change: e757f47faea15071a92f6bdbca758f0b6a228ea6
   Author: Brad Lhotsky <brad@divisionbyzero.net>

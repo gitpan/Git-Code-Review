@@ -33,6 +33,8 @@ sub execute {
     my ($cmd,$opt,$args) = @_;
     my ($match) = @$args;
 
+    die "Not initialized, run git-code-review init!" unless gcr_is_initialized();
+
     my $audit = gcr_repo();
     gcr_reset();
 
@@ -100,7 +102,7 @@ Git::Code::Review::Command::fixed - Mark a commit previously concerned with appr
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 AUTHOR
 

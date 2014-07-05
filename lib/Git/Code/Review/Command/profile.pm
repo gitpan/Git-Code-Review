@@ -43,6 +43,8 @@ sub execute {
     debug("Options Parsed.");
     debug_var($opt);
 
+    die "Not initialized, run git-code-review init!" unless gcr_is_initialized();
+
     my $audit = gcr_repo();
     gcr_reset();
     my %profiles;
@@ -185,7 +187,7 @@ Git::Code::Review::Command::profile - Manage profiles for the code selection
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 AUTHOR
 

@@ -26,6 +26,8 @@ sub description {
 sub execute {
     my($cmd,$opt,$args) = @_;
 
+    die "Not initialized, run git-code-review init!" unless gcr_is_initialized();
+
     my %config = gcr_config();
     foreach my $s (qw(source audit)) {
         no warnings;
@@ -53,7 +55,7 @@ Git::Code::Review::Command::info - Quick overview of the Audit
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 AUTHOR
 

@@ -18,7 +18,7 @@ Git::Code::Review::Tutorial - How to work Git::Code::Review
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 MOTIVATION
 
@@ -71,11 +71,11 @@ computed and stored in the .code-review directory.  You're ready to start select
 
 =head2 Profiles
 
-The default profile include all commits in the repository.  It is possible to add profiles to divy up the reviews amongst individuals or teams.
+The default profile includes all commits in the repository.  It is possible to add profiles to divy up the reviews amongst individuals or teams.
 
 To create a profile:
 
-    $ git code-review profile --add team_a
+    $ git-code-review profile --add team_a
 
 You will be given the opportunity to tune the selection criteria and the notification config for the new profile.  Configure git to automatically use
 this profile for your audits:
@@ -86,7 +86,7 @@ Now all commands will assume the newly configured "team_a" profile.
 
 Editing profiles is simple:
 
-    $ git code-review profile --edit team_a
+    $ git-code-review profile --edit team_a
 
 From there you can configure settings for the selection or notifcation.
 
@@ -103,7 +103,11 @@ This will prompt you for a reason, which you can optionally add on the command l
 
 When this is complete, you can begin the audit by picking a commit from the audit!
 
-    $ git-code-review pic
+    $ git-code-review pick
+
+You can also specify a date range for the commits to pick.  If you want a commit from June 2014:
+
+    $ git code-review pick --since 2014-06-01 --until 2014-06-30
 
 This will randomly select a commit from the list and present it to you in your $EDITOR.  The time spent in your
 editor is tracked, and when you exit the editor, you will be prompted for the action you'd like to take:
@@ -129,10 +133,10 @@ is critical data if you are going to use this process as a control in an audit.
         3. Other (requires explanation)
         4. Changes are not in the bounds for the audit.
 
-    Selection (1-5):
+    Selection (1-4):
 
-The choices should be self explanatory.  Selecting "other" will prompte you to explain yourself.  The rest of the
-options will simply make the commit as approved.  Performing a list will show you the state:
+The choices should be self explanatory.  Selecting "other" will prompt you to explain yourself.  The rest of the
+options will simply mark the commit as approved.  Performing a list will show you the state:
 
     $ git-code-review list
     -[ Commits in the Audit :: /Users/brad/tmp/repo/ ]-
@@ -153,11 +157,11 @@ Raising a concern with a commit will prompt you for a reason:
 
     Why are you raising a concern with this commit?
 
-        1. Calculations are incorect.
+        1. Calculations are incorrect.
         2. Other
         3. Code is not clear, requires more information from the author.
 
-    Selection (1-4): 1
+    Selection (1-3): 1
     Explain: The sort order is backwards, descending is sort { $b <=> $a }.
 
 Every commit you raise a concern with will require you to provide a comment.  This comment will be logged in the audit
@@ -182,11 +186,13 @@ There are certain times when you would like to resign from a commit that was pic
 with the system, or you maybe the author.  In that case, resigning will prevent you from picking that commit again, while
 leaving it available for other reviewers.
 
-        Why are you resigning for this commit?
+    Why are you resigning for this commit?
 
         1. I am the author.
         2. No experience with systems covered.
         3. other
+
+    Selection (1-3):
 
 You will then see that reflected in your list, while other reviewers will see the commit as ready to review:
 

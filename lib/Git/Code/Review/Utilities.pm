@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.4'; # VERSION
+our $VERSION = '0.5'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -550,7 +550,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 FUNCTIONS
 

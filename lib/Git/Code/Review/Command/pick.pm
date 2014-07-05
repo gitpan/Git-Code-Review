@@ -37,7 +37,8 @@ my %_resigned;
 
 sub opt_spec {
     return (
-#        ['noop',       "Take no recorded actions."],
+        ['since|s:s',  "Commit start date, none if not specified", {default => "0000-00-00"}],
+        ['until|u:s',  "Commit end date, none if not specified",   {default => "9999-99-99"}],
     );
 }
 
@@ -55,23 +56,30 @@ sub description {
 sub execute {
     my($cmd,$opt,$args) = @_;
 
+    die "Not initialized, run git-code-review init!" unless gcr_is_initialized();
+
     # Grab the audit repo handle, reset
     my $audit = gcr_repo();
     gcr_reset();
 
     # Get a listing of available commits;
     my @locked = $audit->run('ls-files', File::Spec->catdir('Locked',$CFG{user}));
-    my $pick;
+    my $commit;
     if( @locked ) {
         output({color=>'red'}, "You are currently locking commits, ignoring picklist. Will continue in 1 second.");
         sleep 1;
-        $pick = $locked[0];
+        $commit = gcr_commit_info($locked[0]);
         if( @locked > 1 ) {
-            $pick = prompt("!! You are currently locking the following commits, select one to action: ", menu => \@locked);
+            $commit = gcr_commit_info(
+                prompt("!! You are currently locking the following commits, select one to action: ", menu => \@locked)
+            );
         }
     }
     else {
-        my @picklist = grep { /^$PROFILE/ && gcr_not_resigned($_) && gcr_not_authored($_) } $audit->run('ls-files', '*Review*');
+        my @picklist = grep { $_->{date} ge $opt->{since} && $_->{date} le $opt->{until} }
+                       map { $_=gcr_commit_info($_) }
+                       grep { /^$PROFILE/ && gcr_not_resigned($_) && gcr_not_authored($_) }
+                    $audit->run('ls-files', '*Review*');
 
         if(!@picklist) {
             output({color=>'green'},"All reviews completed on profile: $PROFILE!");
@@ -80,10 +88,9 @@ sub execute {
         else {
             output({color=>"cyan"}, sprintf("+ Picklist currently contains %d commits.",scalar(@picklist)));
         }
-        $pick = splice @picklist, int(rand(@picklist)), 1;
+        $commit = splice @picklist, int(rand(@picklist)), 1;
     }
     # Move to the locked state
-    my $commit = gcr_commit_info($pick);
     gcr_change_state($commit,'locked', 'Locked.');
 
     # Show the Commit
@@ -183,7 +190,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.4
+version 0.5
 
 =head1 AUTHOR
 
