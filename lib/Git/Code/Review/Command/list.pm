@@ -84,7 +84,11 @@ sub execute {
         output({color=>'cyan'}, sprintf "-[ Profile : %s ]-",
             join(', ', map { "$_:$profiles{$_}" } sort keys %profiles)
         );
-        output({color=>'cyan'}, sprintf "-[ Source  : %s ]-", gcr_origin('source') );
+        output({color=>'cyan'}, sprintf "-[ Source  : %s %s%s]-",
+            gcr_origin('source'),
+            $opt->{since} eq '0000-00-00' ? '' : "from $opt->{since} ",
+            $opt->{until} eq '9999-99-99' ? '' : "until $opt->{until} ",
+        );
     }
     else {
         output({color=>'green'}, "No commits matching criteria!");
@@ -107,7 +111,7 @@ Git::Code::Review::Command::list - Quick overview of the Audit Directory
 
 =head1 VERSION
 
-version 0.5
+version 0.6
 
 =head1 AUTHOR
 

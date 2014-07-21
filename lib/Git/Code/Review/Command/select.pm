@@ -247,7 +247,7 @@ Git::Code::Review::Command::select - Perform commit selection
 
 =head1 VERSION
 
-version 0.5
+version 0.6
 
 =head1 AUTHOR
 

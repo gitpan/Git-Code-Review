@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.5'; # VERSION
+our $VERSION = '0.6'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -158,6 +158,20 @@ sub gcr_config {
 sub gcr_is_initialized {
     my $audit = gcr_repo();
     my $url = $audit->run(qw(config submodule.source.url));
+    my $submodule_init = !!(defined $url && length $url);
+
+    # Initialized and happy return
+    return $submodule_init if $submodule_init;
+
+    # Try to initialize the submodule
+    eval {
+        $audit->run(qw(submodule init));
+    };
+    if(my $err = $@) {
+        die "git submodule init failed: $err";
+    }
+    # Try again.
+    $url = $audit->run(qw(config submodule.source.url));
     return !!(defined $url && length $url);
 }
 
@@ -550,7 +564,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.5
+version 0.6
 
 =head1 FUNCTIONS
 

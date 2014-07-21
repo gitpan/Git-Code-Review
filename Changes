@@ -1,9 +1,50 @@
 ==================================================
-Changes from 2013-07-05 00:00:00 +0000 to present.
+Changes from 2013-07-21 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.5 at 2014-07-05 14:20:00 +0000
+version 0.6 at 2014-07-21 19:42:12 +0000
+----------------------------------------
+
+  Change: 9445b34f2dd64146266c36a53d079ad53462bab7
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-21 21:41:47 +0000
+
+    Fix bug with working from shared repository. 
+
+  Change: 46543b78783fb47002fadb9d19f2a4fd4c4e6f54
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-21 21:40:22 +0000
+
+    Fix bug where a cloned repository didn't have the submodule
+    initialized and failed all commands. 
+
+  Change: dd8f9d2b9e17774833187c98e549bc7007764f98
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-08 21:58:23 +0000
+
+    Display the since/until dates in the listing output 
+
+  Change: 13efafd0e39c96932b7c7adbf4863eba71b96c57
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 16:25:41 +0000
+
+    Minor formatting issue from POD regenerated to Markdown. 
+
+  Change: 33a7bae63f1e4b05550fdfe765333d81f2e7ba27
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 16:24:06 +0000
+
+    Cosmetic fix to the POD. 
+
+  Change: 6aa39dc6db7d60b74c35e26e9cbec6d5a23389ac
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-05 16:21:08 +0000
+
+    Version 0.5 Release 
+
+----------------------------------------
+version 0.5 at 2014-07-05 14:15:25 +0000
 ----------------------------------------
 
   Change: eed3bc26576ace8ffeec323e9731db7a8e76b636
