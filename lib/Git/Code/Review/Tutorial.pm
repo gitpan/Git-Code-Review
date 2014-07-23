@@ -18,7 +18,7 @@ Git::Code::Review::Tutorial - How to work Git::Code::Review
 
 =head1 VERSION
 
-version 0.6
+version 0.7
 
 =head1 MOTIVATION
 
@@ -100,6 +100,10 @@ This will prompt you for a reason, which you can optionally add on the command l
 
     $ git-code-review select --since 2014-04-01 --number 15 --reason "April Code Review"
 
+You can also specify which profile to use in the selection:
+
+    $ git-code-review select --profile team_a --number 5 --reason "Team A audit!"
+
 =head2 Picking a commit for review
 
 When this is complete, you can begin the audit by picking a commit from the audit!
@@ -115,12 +119,33 @@ editor is tracked, and when you exit the editor, you will be prompted for the ac
 
     Action?
 
-        1. Approve this commit.
-        2. Raise a concern with this commit.
-        3. Resign from this commit.
-        4. Skip (just exits unlocking the commit.)
+        1. (View) A file mentioned in the commit.
+        2. (View) Commit again.
+        3. [Approve] this commit.
+        4. Raise a [concern] with this commit.
+        5. [Resign] from this commit.
+        6. Skip (just exits unlocking the commit.)
 
-    Selection (1-5):
+    Selection (1-6):
+
+Pick also supports options to affect which commits to pick.  You can use the profile option to select commits in a particular
+profile.  The 'default' profile is used otherwise:
+
+    $ git-code-review pick --profile team_a
+
+Pick defaults to using a randomized ordering for returning commits.  This is intended to avoid collisions if 6 developers are
+reviewing code at the same time.  Not wanting to lock you into our madness, you can re-order the pick using the order which has
+3 options:
+
+=item B<asc> - By date ascending
+
+=item B<desc> - By date descending
+
+=item B<random> - The default, pick a random commit
+
+To specify you'd like the earliest available commit, use:
+
+    $ git-code-review pick --order asc
 
 =head3 Approval
 

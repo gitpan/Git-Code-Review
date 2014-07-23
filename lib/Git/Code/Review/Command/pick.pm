@@ -13,10 +13,12 @@ my $AUDITDIR = gcr_dir();
 my %CFG = gcr_config();
 my $PROFILE = gcr_profile();
 my %LABELS = (
-    approve  => "Approve this commit.",
-    concerns => "Raise a concern with this commit.",
-    resign   => "Resign from this commit.",
-    skip     => "Skip (just exits unlocking the commit.)"
+    approve  => "[Approve] this commit.",
+    concerns => "Raise a [concern] with this commit.",
+    resign   => "[Resign] from this commit.",
+    skip     => "Skip (just exits unlocking the commit.)",
+    _view    => "(View) Commit again.",
+    _file    => "(View) A file mentioned in the commit.",
 );
 my %ACTIONS = (
     approve  => \&approve,
@@ -37,6 +39,7 @@ my %_resigned;
 
 sub opt_spec {
     return (
+        ['order:s',    "How to order the commits picked: random, asc, or desc  (Default: random)", {default=>'random'}],
         ['since|s:s',  "Commit start date, none if not specified", {default => "0000-00-00"}],
         ['until|u:s',  "Commit end date, none if not specified",   {default => "9999-99-99"}],
     );
@@ -48,6 +51,11 @@ sub description {
     Reviewers performing the audit use the 'pick' command to lock a commit for review.
     The command use Term::ReadLine to prompt the end-user for answers to how to handle
     the commit.
+
+    You can optionally pass a SHA1 of a commit in the 'review' state that you
+    haven't authored to review a specific commit, e.g.
+
+        git code-review pick <SHA1>
     EOH
     $DESC =~ s/^[ ]{4}//mg;
     return $DESC;
@@ -75,9 +83,20 @@ sub execute {
             );
         }
     }
+    elsif(ref $args eq 'ARRAY' && @$args) {
+        ($commit)  = map { $_=gcr_commit_info($_) } $audit->run('ls-files', "*$args->[0]*.patch");
+        die "no valid commits found matching $args->[0]" unless defined $commit;
+        die "Commit not in review state, it is in '$commit->{state}'" unless $commit->{state} eq 'review';
+        if( $commit->{author} eq $CFG{user} ) {
+            output({stderr=>1,color=>'red'}, "Nice try! You can't review your own commits.");
+            exit 1;
+        }
+    }
     else {
-        my @picklist = grep { $_->{date} ge $opt->{since} && $_->{date} le $opt->{until} }
-                       map { $_=gcr_commit_info($_) }
+        # Generate an ordered picklist w/o my commits and w/o my resignations
+        my @picklist = sort { $a->{date} cmp $b->{date} }
+                       grep { $_->{date} ge $opt->{since} && $_->{date} le $opt->{until} }
+                       map  { $_=gcr_commit_info($_) }
                        grep { /^$PROFILE/ && gcr_not_resigned($_) && gcr_not_authored($_) }
                     $audit->run('ls-files', '*Review*');
 
@@ -88,14 +107,30 @@ sub execute {
         else {
             output({color=>"cyan"}, sprintf("+ Picklist currently contains %d commits.",scalar(@picklist)));
         }
-        $commit = splice @picklist, int(rand(@picklist)), 1;
+        my %idx = (
+            asc    => 0,
+            desc   => -1,
+            random => int(rand(@picklist)),
+        );
+        $commit = exists $idx{lc $opt->{order}} ? $picklist[$idx{lc $opt->{order}}] : $picklist[$idx{random}];
+
     }
     # Move to the locked state
     gcr_change_state($commit,'locked', 'Locked.');
 
     # Show the Commit
-    gcr_view_commit($commit);
-    my $action = prompt("Action?", menu => \%LABELS);
+    my $action ='_view';
+    do{
+        # View Files
+        if($action eq '_view') {
+            gcr_view_commit($commit);
+        }
+        elsif($action eq '_file') {
+            gcr_view_commit_files($commit);
+        }
+        # Choose next action.
+        $action = prompt("Action?", menu => \%LABELS);
+    } until $action !~ /^_/;
 
     output({color=>'cyan'}, "We are going to $action $commit->{base}");
     $ACTIONS{$action}->($commit);
@@ -190,7 +225,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.6
+version 0.7
 
 =head1 AUTHOR
 

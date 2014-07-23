@@ -1,9 +1,69 @@
 ==================================================
-Changes from 2013-07-21 00:00:00 +0000 to present.
+Changes from 2013-07-23 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.6 at 2014-07-21 19:42:12 +0000
+version 0.7 at 2014-07-23 18:05:20 +0000
+----------------------------------------
+
+  Change: f613c4ac5a53a2d7a6f049e8a9f72b10d40308c8
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-23 20:04:41 +0000
+
+    Fix pod2markdown formatting issues. 
+
+  Change: 6f79801a1ab772e6bfb39a71a0f26e129e2b7ec1
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-23 14:56:57 +0000
+
+    Version 0.7 
+
+  Change: c9337f329bcdc792b988eaf9d0578f264f97fbe4
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-23 14:46:35 +0000
+
+    Added more options to the initial menu for pick.
+
+    - View the commit again.
+
+    - View a file in the repo as it currently exists.
+
+    Turn the first menu into a do/until. 
+
+  Change: 4980aa2692c812e3efebbc3aeb7b2397785f027e
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-23 14:42:08 +0000
+
+    Bugfixes:
+
+    - Moved 'locked' back to a 'user' level state.
+
+    - Fixed master branch checkout bug
+
+    Added some debugging to a few commands. 
+
+  Change: 2b71a288ebdb520905cc8cb1ec535c445bae7106
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-23 14:40:21 +0000
+
+    Add --order to pick, defaults to random to maintain behaviour but
+    supports: asc and desc as well 
+
+  Change: 75fa7dbaadffd20be335f4a149e06f49fd25bc8f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-22 16:08:15 +0000
+
+    Allow you to pick a SHA1 in 'review' state by an optional SHA1
+    argument. 
+
+  Change: 38465240d5231aa22275aec566aba0d96d014781
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-21 21:43:34 +0000
+
+    Release archives. 
+
+----------------------------------------
+version 0.6 at 2014-07-21 19:41:47 +0000
 ----------------------------------------
 
   Change: 9445b34f2dd64146266c36a53d079ad53462bab7

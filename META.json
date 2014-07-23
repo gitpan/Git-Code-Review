@@ -75,7 +75,7 @@
          "web" : "https://github.com/reyjrar/Git-Code-Review"
       }
    },
-   "version" : "0.6",
+   "version" : "0.7",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018001"
@@ -426,7 +426,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "release-0.6",
+                  "tag" : "release-0.7",
                   "tag_format" : "release-%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

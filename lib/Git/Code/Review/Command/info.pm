@@ -55,7 +55,7 @@ Git::Code::Review::Command::info - Quick overview of the Audit
 
 =head1 VERSION
 
-version 0.6
+version 0.7
 
 =head1 AUTHOR
 

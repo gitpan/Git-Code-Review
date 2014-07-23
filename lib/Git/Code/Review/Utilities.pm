@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.6'; # VERSION
+our $VERSION = '0.7'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -33,6 +33,7 @@ use Sub::Exporter -setup => {
         gcr_profiles
         gcr_open_editor
         gcr_view_commit
+        gcr_view_commit_files
         gcr_change_state
         gcr_not_resigned
         gcr_not_authored
@@ -66,11 +67,11 @@ my %EDITOR = (
 );
 # States of a Commit
 my %STATE = (
-    'locked'   => { type => 'global', name  => 'Locked',      color => 'cyan' },
+    'locked'   => { type => 'user',   name  => 'Locked',      color => 'cyan'   },
     'review'   => { type => 'reset',  field => 'review_path', color => 'yellow' },
-    'approved' => { type => 'global', name  => 'Approved',    color => 'green' },
-    'concerns' => { type => 'global', name  => 'Concerns',    color => 'red' },
-    'comment'  => { type => 'global', name  => 'Comments',    color => 'white' },
+    'approved' => { type => 'global', name  => 'Approved',    color => 'green'  },
+    'concerns' => { type => 'global', name  => 'Concerns',    color => 'red'    },
+    'comment'  => { type => 'global', name  => 'Comments',    color => 'white'  },
 );
 # General Config options
 my %CFG = (
@@ -230,7 +231,7 @@ sub gcr_reset {
     $type ||= 'audit';
     my $repo = gcr_repo($type);
     # Stash any local changes, and pull master
-    output("+ Reseting to origin:master, any changes will be stashed.");
+    output({color=>'magenta'},"+ [$type] Reseting to origin:master, any changes will be stashed.");
     my $origin = gcr_origin($type);
     if(defined $origin) {
         verbose("= Found origin, checking working tree status.");
@@ -242,7 +243,7 @@ sub gcr_reset {
         if( $type eq 'audit' ) {
             verbose({color=>'cyan'},"= Swithcing to master branch.");
             eval {
-                $repo->run(qw(checkout -b master));
+                $repo->run(qw(checkout master));
             };
             if( my $err = $@ ) {
                 if( $err !~ /A branch named 'master'/ ) {
@@ -329,6 +330,7 @@ sub gcr_commit_info {
     return wantarray ? %commit : \%commit;
 }
 
+my %timing=();
 sub gcr_open_editor {
     my ($mode,$file) = @_;
 
@@ -355,7 +357,9 @@ sub gcr_open_editor {
         my $rc = waitpid($pid,0);
         debug("Child process $pid exited with $rc");
         my $diff = time - $start;
-        return sprintf('%dm%ds',$diff/60,$diff%60);
+        $timing{$file} ||= 0;
+        $timing{$file} +=  $diff;
+        return sprintf('%dm%ds',$timing{$file}/60,$timing{$file}%60);
     }
     return; # Shouldn't get here.
 }
@@ -364,6 +368,32 @@ sub gcr_view_commit {
     my ($commit) = @_;
     $commit->{review_time} = gcr_open_editor(readonly => File::Spec->catfile($AUDITDIR,$commit->{current_path}));
 }
+
+sub gcr_view_commit_files {
+    my ($commit) = @_;
+    die "Source submodule is broken!" unless gcr_is_initialized();
+
+    # Grab source repository
+    my $source = gcr_repo('source');
+    # Pull source
+    gcr_reset('source');
+
+    my @files  = $source->run(qw(diff-tree --no-commit-id --name-only -r), $commit->{sha1});
+
+    die "Weird, no files referenced in $commit->{sha1}" unless @files;
+
+    my $selection = prompt("Which file would you like to view?", menu => \@files);
+    my $filename = File::Spec->catfile($AUDITDIR,'source',$selection);
+
+    if( -f $filename ) {
+        gcr_open_editor(readonly => $filename);
+    }
+    else {
+        output({color=>'yellow'}, "!! Selected file doesn't exist in the most recent checkout: $selection");
+    }
+    return;
+}
+
 
 
 sub gcr_change_state {
@@ -564,7 +594,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.6
+version 0.7
 
 =head1 FUNCTIONS
 
@@ -630,6 +660,11 @@ that mataches the string passed in.
 
 View the contents of the commit in the $commit_info,
 stores time spent in editor as review_time in the hash.
+
+=head2 gcr_view_commit_files
+
+Display a menu containing the files mentioned in the commit with the ability to view
+the contents of one of those files.
 
 =head2 gcr_change_state($commit_info,$state,$details)
 
