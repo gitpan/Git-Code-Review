@@ -117,7 +117,7 @@ Git::Code::Review::Notify::Email - Notification by email
 
 =head1 VERSION
 
-version 0.7
+version 0.8
 
 =head1 AUTHOR
 

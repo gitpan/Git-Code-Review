@@ -1,9 +1,45 @@
 ==================================================
-Changes from 2013-07-23 00:00:00 +0000 to present.
+Changes from 2013-08-14 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.7 at 2014-07-23 18:05:20 +0000
+version 0.8 at 2014-08-14 16:07:54 +0000
+----------------------------------------
+
+  Change: dc524838c849a7953691d4e6b4f41701f5a9c4cb
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-08-14 18:04:28 +0000
+
+    Updates to the documentation for the 0.8 release. 
+
+  Change: bea13b4ef9b0fe409680ec8d90240c5934d925d4
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-08-14 18:03:12 +0000
+
+    Add a gcr_change_profile() function to move commits between profiles.
+    Add a "move" command to move commits between profiles. Add a "move"
+    option to the pick process to move commits to other profiles. 
+
+  Change: 58dfb55f72f3359497ffe055c3043919f319ca6a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-08-14 16:59:30 +0000
+
+    Typo fix. 
+
+  Change: 19c4f69fc01b3dbf8e180bf6f96c2e71986947ed
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-07-24 18:53:29 +0000
+
+    Be less verbose by default. 
+
+  Change: 4d6330d9ddb7edc0f7df3db4dfa14e6594c2c51c
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-07-23 21:46:01 +0000
+
+    Archive 0.7 release. 
+
+----------------------------------------
+version 0.7 at 2014-07-23 18:04:41 +0000
 ----------------------------------------
 
   Change: f613c4ac5a53a2d7a6f049e8a9f72b10d40308c8
