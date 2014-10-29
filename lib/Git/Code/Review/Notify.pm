@@ -206,6 +206,84 @@ my %_DEFAULTS = (
           * [% commit.sha1 %]    [% commit.date %]    [% commit.author %]
         [% END -%]
     },
+    report => q{
+        [% USE format -%]
+        [% USE td         = format('%9s |') -%]
+        [% USE th         = format('|| %12s |') -%]
+        [% SET states     = [ 'approved', 'concerns', 'locked', 'review' ] -%]
+        [% SET simple     = [ 'complete', 'todo' ] -%]
+
+        Commit Status [% options.exists('since') ? options.since : '' %] through [% options.until %]
+        ----
+        [% IF commits.keys.size > 0 -%]
+        [% th('profile') %]
+        [%- FOREACH col IN states -%]
+            [%- td(col) %]
+        [%- END %]
+        [% FOREACH profile IN commits.keys.sort -%]
+            [%- NEXT IF profile.length == 0 -%]
+            [%- th(profile) %]
+            [%- FOREACH state IN states -%]
+                [%- td(commits.$profile.exists(state) ? commits.$profile.$state : 0) %]
+            [%- END %]
+        [% END -%]
+        [% ELSE -%]
+            (i) Nothing to report.
+        [% END -%]
+
+
+
+        History [% options.exists('since') ? options.since : '' %] through [% options.until %]
+        ----
+        [% IF monthly.keys.size > 0 -%]
+        [% th('state') %]
+        [%- FOREACH month IN monthly.keys.sort -%]
+            [%- td(month) %]
+        [%- END %]
+        [% FOREACH state IN simple -%]
+            [%- th(state) -%]
+            [%- FOREACH month IN monthly.keys.sort -%]
+                [%- td(monthly.$month.exists(state) ? monthly.$month.$state : 0) %]
+            [%- END %]
+        [% END -%]
+        [% ELSE -%]
+            (i) Nothing to report.
+        [% END -%]
+
+
+
+        Active Concerns through [% options.until %]
+        ----
+        [% IF concerns.keys.size > 0 -%]
+        [% FOREACH sha1 IN concerns.keys.sort -%]
+            [%- SET icon = concerns.$sha1.commit.state == 'approved' ? '(/)' : '(x)' -%]
+
+            [% icon %] [% sha1 %] is now *[% concerns.$sha1.commit.state %]*
+            * [% concerns.$sha1.commit.date %] authored by [% concerns.$sha1.commit.by %]
+            * [% concerns.$sha1.concern.date %] raised for *[% concerns.$sha1.concern.reason %]* by [% concerns.$sha1.concern.by %]
+        [% IF concerns.$sha1.exists('log') -%]
+        [% FOREACH log IN concerns.$sha1.log -%]
+            * [% log.date %] [% log.state %] by [% log.by %] [% IF log.exists('reason') -%] for reason *[% log.reason %]*[% END %]
+        [% END -%]
+        [% END -%]
+        [% END -%]
+        [% ELSE -%]
+            (/) No concerns raised.
+        [% END -%]
+    },
+    overdue => q{
+        # Overview of Commits older than [% options.age %] days old.
+
+        [% FOREACH profile IN profiles.keys.sort -%]
+        [% NEXT IF !profiles.$profile.exists('total') -%]
+        [% NEXT IF profiles.$profile.total <= 0 -%]
+        [% profile %]: [% profiles.$profile.total %]
+        [% FOREACH month IN profiles.$profile.keys.sort -%]
+            [%- NEXT IF month == "total" -%]
+            [% month %]: [% profiles.$profile.$month %]
+        [% END %]
+        [% END -%]
+    },
 );
 
 sub _install_templates {
@@ -252,7 +330,7 @@ Git::Code::Review::Notify - Notification framework
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 AUTHOR
 

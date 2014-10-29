@@ -3,7 +3,7 @@ package Git::Code::Review;
 use strict;
 use warnings;
 
-our $VERSION = '0.8'; # VERSION
+our $VERSION = '0.9'; # VERSION
 
 use App::Cmd::Setup -app;
 
@@ -21,7 +21,7 @@ Git::Code::Review - Tools for performing code review using Git as the backend
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 SYNOPSIS
 

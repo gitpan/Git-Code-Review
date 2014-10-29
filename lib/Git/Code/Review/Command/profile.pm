@@ -144,11 +144,11 @@ sub _default_file {
     my ($profile,$file) = @_;
     my %content = (
         'selection.yaml' => [
-            "Selection Criteria for $profile",'',
-            '  Valid options are path and author, globbing allowed.',
+            "# Selection Criteria for $profile",'#',
+            '#  Valid options are path and author, globbing allowed.',
             '---',
             'path:',
-            '  - **',
+            q{  - '**'},
         ],
         'notification.config' => [
             "; Notification Configuration for $profile",
@@ -187,7 +187,7 @@ Git::Code::Review::Command::profile - Manage profiles for the code selection
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 AUTHOR
 

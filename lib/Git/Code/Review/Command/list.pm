@@ -57,14 +57,18 @@ sub execute {
         # Assemble Commits
         foreach my $commit ( sort { $a->{date} cmp $b->{date} } @commits ) {
             $commit->{state} = 'resigned' unless gcr_not_resigned($commit->{base});
+            # Profile filter
+            next unless exists $commit->{profile} && length $commit->{profile};
+            next unless (exists $opt->{all} && $opt->{all}) || $commit->{profile} eq $profile;
+
+            # Count them
             $states{$commit->{state}} ||= 0;
             $states{$commit->{state}}++;
             $profiles{$commit->{profile}} ||= 0;
             $profiles{$commit->{profile}}++;
+
             # State filter
             next if keys %SHOW && !exists $SHOW{$commit->{state}};
-            # Profile filter
-            next unless (exists $opt->{all} && $opt->{all}) || $commit->{profile} eq $profile;
 
             my $color = gcr_state_color($commit->{state});
             output({indent=>1,color=>$color}, join("\t",
@@ -111,7 +115,7 @@ Git::Code::Review::Command::list - Quick overview of the Audit Directory
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 AUTHOR
 

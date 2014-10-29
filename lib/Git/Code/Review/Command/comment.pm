@@ -119,7 +119,7 @@ Git::Code::Review::Command::comment - Comment on a commit in the audit
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 AUTHOR
 

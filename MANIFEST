@@ -14,11 +14,16 @@ lib/Git/Code/Review/Command/info.pm
 lib/Git/Code/Review/Command/init.pm
 lib/Git/Code/Review/Command/list.pm
 lib/Git/Code/Review/Command/move.pm
+lib/Git/Code/Review/Command/overdue.pm
 lib/Git/Code/Review/Command/pick.pm
 lib/Git/Code/Review/Command/profile.pm
+lib/Git/Code/Review/Command/report.pm
 lib/Git/Code/Review/Command/select.pm
+lib/Git/Code/Review/Command/show.pm
 lib/Git/Code/Review/Notify.pm
 lib/Git/Code/Review/Notify/Email.pm
+lib/Git/Code/Review/Notify/JIRA.pm
+lib/Git/Code/Review/Notify/STDOUT.pm
 lib/Git/Code/Review/Tutorial.pm
 lib/Git/Code/Review/Utilities.pm
 t/00-compile.t

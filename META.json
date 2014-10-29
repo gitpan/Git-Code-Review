@@ -30,6 +30,7 @@
          "requires" : {
             "App::Cmd::Setup" : "0",
             "CLI::Helpers" : "0",
+            "Config::Auto" : "0",
             "Config::GitLike" : "0",
             "Cwd" : "0",
             "File::Basename" : "0",
@@ -38,6 +39,7 @@
             "Getopt::Long" : "0",
             "Git::Repository" : "0",
             "Hash::Merge" : "0",
+            "JIRA::Client" : "0",
             "MIME::Lite" : "0",
             "Module::Pluggable" : "0",
             "POSIX" : "0",
@@ -45,6 +47,8 @@
             "Sys::Hostname" : "0",
             "Template" : "0",
             "Template::Stash" : "0",
+            "Text::Wrap" : "0",
+            "Time::Local" : "0",
             "YAML" : "0",
             "perl" : "5.006",
             "strict" : "0",
@@ -75,7 +79,7 @@
          "web" : "https://github.com/reyjrar/Git-Code-Review"
       }
    },
-   "version" : "0.8",
+   "version" : "0.9",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -426,7 +430,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "release-0.8",
+                  "tag" : "release-0.9",
                   "tag_format" : "release-%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

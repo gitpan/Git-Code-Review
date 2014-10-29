@@ -4,7 +4,7 @@ use warnings;
 
 # this test was generated with Dist::Zilla::Plugin::Test::Compile 2.043
 
-use Test::More  tests => 15 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 20 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 
 
@@ -16,11 +16,16 @@ my @module_files = (
     'Git/Code/Review/Command/init.pm',
     'Git/Code/Review/Command/list.pm',
     'Git/Code/Review/Command/move.pm',
+    'Git/Code/Review/Command/overdue.pm',
     'Git/Code/Review/Command/pick.pm',
     'Git/Code/Review/Command/profile.pm',
+    'Git/Code/Review/Command/report.pm',
     'Git/Code/Review/Command/select.pm',
+    'Git/Code/Review/Command/show.pm',
     'Git/Code/Review/Notify.pm',
     'Git/Code/Review/Notify/Email.pm',
+    'Git/Code/Review/Notify/JIRA.pm',
+    'Git/Code/Review/Notify/STDOUT.pm',
     'Git/Code/Review/Tutorial.pm',
     'Git/Code/Review/Utilities.pm'
 );

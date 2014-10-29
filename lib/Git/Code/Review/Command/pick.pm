@@ -118,7 +118,7 @@ sub execute {
 
     }
     # Move to the locked state
-    gcr_change_state($commit,'locked', 'Locked.');
+    gcr_change_state($commit,'locked', { skip => 'true', message => 'Locked.' });
 
     # Only show "move" unless we have > 1 profile
     my %profiles = gcr_profiles();
@@ -243,7 +243,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 AUTHOR
 

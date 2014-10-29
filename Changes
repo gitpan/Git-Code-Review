@@ -1,9 +1,208 @@
 ==================================================
-Changes from 2013-08-14 00:00:00 +0000 to present.
+Changes from 2013-10-29 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.8 at 2014-08-14 16:07:54 +0000
+version 0.9 at 2014-10-29 18:19:19 +0000
+----------------------------------------
+
+  Change: 0a87043a50a17f526c90c58b71e73f1a5e11aba3
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-29 18:48:46 +0000
+
+    Added overdue commands and templates. 
+
+  Change: 220f11c577d261766bc113ed413730de191a814f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-27 14:15:18 +0000
+
+    Fixed a few "uninitialized strings" warnings with $ENV{EDITOR} and in
+    list. Major overhaul of the submodule handling to not break things
+    horribly. 
+
+  Change: 35e1af06f62947cfbdc965074dea5c8ab0f17e47
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-14 14:48:52 +0000
+
+    Touch up the JIRA Templates to be date aware. Move to one update per
+    day, allow comments and files in tickets to be updated. Fix some
+    logic in the report action to make the daily report action more
+    fluid. Include details on audited commits in the selection.csv. 
+
+  Change: 5b7b64590f2ed0de423e0bac09dcfac232b6144d
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-14 14:48:36 +0000
+
+    Make use of gcr_audit_files in the utilities module. 
+
+  Change: 2fad3b20b1b1b0bb75c1e9ac979c9cc59b72ed10
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-06 18:34:00 +0000
+
+    Report command now includes a list of the commits that were added for
+    the previous month. Better handling of dates so the report makes a
+    lot more sense. 
+
+  Change: 110e271119decce79b9609e8d5031adfa8ceb73f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-06 18:34:00 +0000
+
+    New command to show the summary of a particular commit. 
+
+  Change: 9b20a991398fd0006b858bb6c5146ac7a20f3b4a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-06 14:32:40 +0000
+
+    Fix YAML Bugs in the template generation 
+
+  Change: a1b6151a139c97e77315bd763382ae6009ccfdd8
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 22:22:32 +0000
+
+    Fix bugs in the logic for the display of the history. 
+
+  Change: 9edfc778f8a6a9244b812daf478fadd03bbfbf09
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 21:05:37 +0000
+
+    Merge branch 'blhotsky/JIRA-reporting'
+
+    Conflicts:
+
+    lib/Git/Code/Review/Command/report.pm 
+
+  Change: c7da033f8db7da5696b60af43e1bb1a8a606a570
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 17:36:26 +0000
+
+    Use the full history log file to create the 'history.log' attachment
+    in JIRA so auditors have access to all data in the interface. 
+
+  Change: aade3cb662841096df4919f4a5d1fdaaa2689733
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 17:35:56 +0000
+
+    Report is restructured to be simpler and more in line with what
+    compliance officers may want. 
+
+  Change: 2ed117f391f679c84369aa075071fb414047a352
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 17:34:31 +0000
+
+    Use the gcr_config() function in gcr_commit_message to lookup whether
+    to record review time. This now defaults to false and users must opt
+    in by setting code-review.record_time in their ~/.gitconfig 
+
+  Change: f4615ff4366b3adcc144d092b93e6f5b69257bf7
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 17:32:08 +0000
+
+    Saner gcr_config() function for easier additions of tooling. 
+
+  Change: 19c6dc33e9c255a77693cfbff5d76f60270c5044
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-10-04 17:31:29 +0000
+
+    Skip commits without a profile in the list command. 
+
+  Change: 627f851224265e5c50095f6bd23154e4eb447318
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-30 16:58:10 +0000
+
+    Added JIRA Notification Plugin. Added the report command which works
+    wonderfully with the JIRA Notification Plugin. 
+
+  Change: 451ce688db8eaacccbad155750c52744b248e9b7
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-30 16:41:26 +0000
+
+    Change email notification plugin to take advantage of the new STDOUT
+    module. 
+
+  Change: d581cfcfcb78e4054be1470e693f42acfde96762
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-30 16:40:57 +0000
+
+    Profile aware report mechanism for tracking and reporting by profile. 
+
+  Change: 154c2c8373dbb9c5cf1039463d1b5d9fd25216ac
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-30 16:39:13 +0000
+
+    Get the list of files modified in the audit commit. This is useful
+    for counting the number of files a 'select' adds to the repository. 
+
+  Change: 8f90494e43c8649134bd2d2a3b6be9b0e4120861
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-30 16:37:42 +0000
+
+    Added STDOUT Notify plugin for simple message displays. 
+
+  Change: c8bff125afcb68238c0b3cacd19945a515305223
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-29 17:40:18 +0000
+
+    Fixed templates to be readable in email and JIRA-ble. Added Logic to
+    cram data into JIRA. 
+
+  Change: f82939e7305f0be16145be48acd13f1f4a2b032c
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-29 13:33:50 +0000
+
+    Starting the connection bits for JIRA 
+
+  Change: 5af15e749c330b55d09b6a61872bdbede3fb1ce5
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-24 17:58:21 +0000
+
+    Report template is complete with all necessary information coming
+    from the audit log.
+
+    Added utility function to Git::Code::Review::Utilties to facilitate
+    the data collection for reporting.
+
+    JIRA Formatting of the report mail needs to be verfified. 
+
+  Change: 12cc163815100abf1bf832c05803b278a71f61b6
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-18 16:35:50 +0000
+
+    Initial check-in for JIRA Reporting Toolset 
+
+  Change: ff46908fcd043965cae9a14d398702ec37045f9d
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-18 16:34:29 +0000
+
+    Fix bug in the display of status information. 
+
+  Change: feaa7493007a5b13414a732d45fb8273b9a820bc
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-08 21:55:39 +0000
+
+    Remove some debugging output as it's too noisy. 
+
+  Change: d236aa83f1a42af3d6f1f13bcd8d95df44163d8e
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-09-08 21:54:14 +0000
+
+    Enable Git::Repository::Plugin::Log Tweak the logging details for the
+    YAML 
+
+  Change: b91d1b5f39c05a84961b09b730febb28f2182e70
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-08-18 16:01:31 +0000
+
+    Fix bug in default profile file syntax due to YAML reference
+    ambiguity. 
+
+  Change: 3a016f27617079aae2c781b113c7ae7df49976b4
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-08-14 18:08:37 +0000
+
+    Archive 0.8 release 
+
+----------------------------------------
+version 0.8 at 2014-08-14 16:04:28 +0000
 ----------------------------------------
 
   Change: dc524838c849a7953691d4e6b4f41701f5a9c4cb

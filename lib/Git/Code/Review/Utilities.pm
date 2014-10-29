@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.8'; # VERSION
+our $VERSION = '0.9'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -13,7 +13,7 @@ use File::Basename;
 use File::Spec;
 use File::Temp qw(tempfile);
 use Getopt::Long qw(:config pass_through);
-use Git::Repository;
+use Git::Repository qw( Log );
 use Hash::Merge;
 use POSIX qw(strftime);
 use YAML;
@@ -41,6 +41,10 @@ use Sub::Exporter -setup => {
         gcr_commit_exists
         gcr_commit_info
         gcr_commit_message
+        gcr_commit_profile
+        gcr_audit_commit
+        gcr_audit_files
+        gcr_audit_record
         gcr_state_color
     )],
 };
@@ -76,7 +80,7 @@ my %STATE = (
 );
 # General Config options
 my %CFG = (
-    editor => exists $EDITOR{$ENV{EDITOR}} ? $ENV{EDITOR} : 'vim',
+    editor => exists $ENV{EDITOR} && exists $EDITOR{$ENV{EDITOR}} ? $ENV{EDITOR} : 'vim',
 );
 my %PATHS   = (
     audit  => getcwd(),
@@ -126,17 +130,22 @@ sub gcr_profiles {
 my %_config = ();
 sub gcr_config {
 
-    $CFG{user} = $GITRC->get(key => 'user.email') unless exists $CFG{user};
-
     my $merge = Hash::Merge->new('STORAGE_PRECEDENT');
     if(!keys %_config) {
         %_config = %CFG;
+
+        my %gitrc = qw(
+            user.email              user
+            code-review.record_time record_time
+        );
+
+        foreach my $k (keys %gitrc) {
+            my $v = $GITRC->get(key => $k);
+            next unless defined $v;
+            $_config{$gitrc{$k}} = $v;
+        }
+
         foreach my $sub (qw(notification)) {
-            # Here be dragons.
-            #no warnings 'redefine';
-            # Going to overload these subroutines for this block to load files correctly.
-            #local *Config::GitLike::global_file = sub { File::Spec->catfile($AUDITDIR,'.code-review',"${sub}.config") };
-            #local *Config::GitLike::user_file = sub { File::Spec->catfile($AUDITDIR,qw(.code-review profiles),gcr_profile(exists => 0),"${sub}.config")  };
             my @files = (
                 File::Spec->catfile($AUDITDIR,'.code-review',"${sub}.config"),
                 File::Spec->catfile($AUDITDIR,qw(.code-review profiles),gcr_profile(exists => 0),"${sub}.config")
@@ -230,21 +239,21 @@ sub gcr_origin {
 sub gcr_reset {
     my ($type) = @_;
     $type ||= 'audit';
-    my $repo = gcr_repo($type);
+    my $audit = gcr_repo('audit');
     # Stash any local changes, and pull master
-    verbose({color=>'magenta'},"+ [$type] Reseting to origin:master, any changes will be stashed.");
-    my $origin = gcr_origin($type);
-    if(defined $origin) {
-        verbose({level=>2},"= Found origin, checking working tree status.");
-        my @dirty = $repo->run(qw{status -s});
-        if( @dirty ) {
-            verbose({color=>'yellow'},"! Audit working tree is dirty, stashing files");
-            $repo->run($type eq 'audit' ? qw{stash -u} : qw(reset --hard));
-        }
-        if( $type eq 'audit' ) {
+    if( $type eq 'audit' ) {
+        verbose({color=>'magenta'},"+ [$type] Reseting repository any changes will be stashed.");
+        my $origin = gcr_origin('audit');
+        if(defined $origin) {
+            verbose({level=>2},"= Found origin, checking working tree status.");
+            my @dirty = $audit->run(qw{status -s});
+            if( @dirty ) {
+                verbose({color=>'yellow'},"! Audit working tree is dirty, stashing files");
+                $audit->run($type eq 'audit' ? qw{stash -u} : qw(reset --hard));
+            }
             verbose({level=>2,color=>'cyan'},"= Swithcing to master branch.");
             eval {
-                $repo->run(qw(checkout master));
+                $audit->run(qw(checkout master));
             };
             if( my $err = $@ ) {
                 if( $err !~ /A branch named 'master'/ ) {
@@ -253,36 +262,25 @@ sub gcr_reset {
                 }
                 debug({color=>'red'}, "!! $err");
             }
+            verbose({level=>2,color=>'cyan'},"+ Initiating pull from $origin");
+            local *STDERR = *STDOUT;
+            my @output = $audit->run(
+                $type eq 'audit' ? qw(pull origin master) : 'pull'
+            );
+            debug({color=>'magenta'}, @output);
         }
-        verbose({level=>2,color=>'cyan'},"+ Initiating pull from $origin");
-        local *STDERR = *STDOUT;
-        my @output = $repo->run(
-            $type eq 'audit' ? qw(pull origin master) : 'pull'
-        );
-        debug({color=>'magenta'}, @output);
-
-        # Submodule reset includes incrementing the submodule pointer.
-        if( $type eq 'source' ) {
-            # commit submodule update
-            eval {
-                my $audit = gcr_repo('audit');
-                my %CFG = gcr_config();
-                $audit->run(add => 'source');
-                $audit->run(commit => '-m',
-                    join("\n", "Source Repository Refresh",
-                        Dump({
-                            skip     => 'true',
-                            reviewer => $CFG{user},
-                            action   => 'source_refresh',
-                        })
-                    )
-                );
-                gcr_push();
-            };
+        else {
+            die "no remote 'origin' available!";
         }
     }
+    elsif( $type eq 'source' ) {
+        # Submodule reset includes incrementing the submodule pointer.
+        output({color=>'magenta'}, "Pulling the source repository.");
+        debug({color=>'cyan'},$audit->run(qw(submodule update --init --remote --merge)));
+    }
     else {
-        die "no remote 'origin' available!";
+        output({stderr=>1,color=>'red'}, "gcr_reset('$type') is not known, going to kill myself to prevent bad things.");
+        exit 1;
     }
 }
 
@@ -311,7 +309,7 @@ sub gcr_commit_info {
 
     my @matches = $audit->run('ls-files', "*$object*");
     if( @matches != 1 ) {
-        die sprintf('%s commit object: %s from %s line %d', (@matches > 1 ? 'ambiguous' : 'unknown'), $object, $_sub, $_line);
+        die sprintf('gcr_commit_info("%s") %s commit object: %s line %d', $object, (@matches > 1 ? 'ambiguous' : 'unknown'), $_sub, $_line);
     }
     my %commit = (
         base         => basename($matches[0]),
@@ -321,7 +319,7 @@ sub gcr_commit_info {
         review_time  => 'na',
         state        => _get_state($matches[0]),
         author       => _get_author($matches[0]),
-        profile      => (File::Spec->splitdir($matches[0]))[0],
+        profile      => _get_commit_profile($matches[0]),
         reviewer     => $CFG{user},
         source_repo  => gcr_origin('source'),
         audit_repo   => gcr_origin('audit'),
@@ -329,6 +327,23 @@ sub gcr_commit_info {
     );
 
     return wantarray ? %commit : \%commit;
+}
+
+sub gcr_commit_profile {
+    my ($object) = @_;
+    my ($_line,$_sub) = (caller 1)[2,3];
+
+    die "Invalid call to gcr_commit_profile() from  $_sub at $_line" unless $object;
+
+    my $audit = gcr_repo();
+    # Object can be a sha1, path in the repo, or patch
+    my @matches = $audit->run('ls-files', "*$object*");
+    if( @matches != 1 ) {
+        verbose({color=>'yellow',indent=>1}, sprintf 'gcr_commit_profile("%s") %s commit object from %s line %d', $object, (@matches > 1 ? 'ambiguous' : 'unknown'), $_sub, $_line);
+        return;
+    }
+
+    return _get_commit_profile($matches[0]);
 }
 
 my %timing=();
@@ -507,8 +522,11 @@ sub gcr_change_state {
         verbose("+ Moving from $orig to $target : $info->{message}");
         debug($audit->run('mv', $orig, $target));
         my %details = (
+            profile        => gcr_profile(),
+            commit         => $commit->{sha1},
+            commit_date    => $commit->{date},
             state_previous => $prev,
-            state => $state,
+            state          => $state,
             %$info
         );
         my $message = gcr_commit_message($commit,\%details);
@@ -527,9 +545,12 @@ sub gcr_change_state {
 sub gcr_commit_message {
     my($commit,$info) = @_;
     my %details = ();
+    my %cfg = gcr_config();
     #
     # Grab from Commit Object
-    foreach my $k (qw(author date reviewer review_time)) {
+    my @fields = qw(author date reviewer);
+    push @fields, 'review_time' if exists $cfg{record_time};
+    foreach my $k (@fields) {
         next unless exists $commit->{$k};
         next unless $commit->{$k};
         next if $commit->{$k} eq 'na';
@@ -541,6 +562,68 @@ sub gcr_commit_message {
     $message .= Dump({ %details, %{$info} });
     return $message;
 }
+
+sub gcr_audit_commit {
+    my($audit_sha1) = @_;
+    my $audit = gcr_repo();
+    my ($_line,$_sub) = (caller 1)[2,3];
+
+    # Get a list of files in the commit that end in .patch
+    my %c = map { $_ => 1 }
+            map { s/\.patch//; basename($_) }
+            gcr_audit_files($audit_sha1);
+
+    my @commits = keys %c;
+    if(@commits != 1) {
+        verbose({color=>'red',indent=>1}, sprintf "gcr_audit_commit('%s') contains %d source commits (%s - line %d)\n", $audit_sha1, scalar(@commits), $_sub, $_line );
+        return;
+    }
+
+    return $commits[0];
+}
+
+sub gcr_audit_files {
+    my($audit_sha1) = @_;
+    my $audit = gcr_repo();
+    my ($_line,$_sub) = (caller 1)[2,3];
+
+    # Get a list of files in the commit that end in .patch
+    my @files = grep { /\.patch$/ } $audit->run(qw(diff-tree --no-commit-id --name-only -r), $audit_sha1);
+    return @files;
+}
+
+
+sub gcr_audit_record {
+    my (@lines) = @_;
+    my %details = ();
+    my $yaml_raw = undef;
+    foreach my $line (map { split /\r?\n/, $_ } @lines) {
+        if(!defined $yaml_raw && $line eq '---')  {
+            $yaml_raw = '';
+        }
+        elsif(defined $yaml_raw) {
+            $yaml_raw .= "$line\n";
+        }
+        else {
+            $details{message} ||= '';
+            $details{message} .= "$line\n";
+        }
+    }
+    if(defined $yaml_raw) {
+        my $d = undef;
+        eval {
+            $d = YAML::Load($yaml_raw);
+        };
+        if($@) {
+            debug({color=>'red',stderr=>1}, "Error retrieving YAML details from:", $yaml_raw);
+        }
+        if(ref $d eq 'HASH') {
+            map { $details{$_} = $d->{$_} } grep { $_ ne 'message' } keys %{ $d };
+        }
+    }
+    return wantarray ? %details : { %details };
+}
+
 my $resigned_file;
 my %_resigned;
 sub gcr_not_resigned {
@@ -592,7 +675,7 @@ sub _get_commit_date {
     my $base = basename($current_path);
     my $path = File::Spec->catfile($AUDITDIR,$current_path);
     die "get_review_path(): nothing here $path" unless -f $path;
-    debug("Reading file $path for review_path.");
+
     open(my $fh, "<", $path) or die "_get_commit_date() cannot open $path: $!";
     my $ISO=undef;
     while( !$ISO ) {
@@ -604,13 +687,19 @@ sub _get_commit_date {
     return $ISO;
 }
 
+sub _get_commit_profile {
+    my ($path) = @_;
+
+    my $part = (File::Spec->splitdir($path))[0];
+    return $part eq 'Locked' ? undef : $part;
+}
 
 sub _get_author {
     my ($current_path) = @_;
 
     my $path = File::Spec->catfile($AUDITDIR,$current_path);
     die "get_author_email(): nothing here $path" unless -f $path;
-    debug("Reading file $path for review_path.");
+
     open(my $fh, "<", $path) or die "_get_author() cannot open $path: $!";
     my $author;
     while( !$author ) {
@@ -659,7 +748,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.8
+version 0.9
 
 =head1 FUNCTIONS
 
@@ -715,6 +804,10 @@ Returns 1 if the commit is in the audit already, or 0 otehrwise
 Retrieves all relevant Git::Code::Review details on the commit
 that mataches the string passed in.
 
+=head2 gcr_commit_profile(sha1)
+
+Find and return the profile for the commit.
+
 =head2 gcr_open_editor( mode => file )
 
     Mode can be: readonly, modify
@@ -752,6 +845,25 @@ will be added to the YAML generated.
 Creates the YAML commit message.  If $details{message} exists
 it will be used as the YAML header text/comment.
 
+=head2 gcr_audit_commit($AuditSHA1)
+
+Returns the SHA1 from the source repository given the SHA1 from the
+the Audit Repository.
+
+=head2 gcr_audit_files($AuditSHA1)
+
+Returns the list of files modified by the Audit SHA1
+the Audit Repository.
+
+=head2 gcr_audit_record(@lines)
+
+Converts a GCR Message into the structure:
+{
+    message => 'FreeText',
+    date => 'blah',
+    author => 'blah',
+}
+
 =head2 gcr_not_resigned($commit)
 
 Returns true unless the author resigned from the commit.
@@ -771,6 +883,10 @@ Figure out the review path from a file path.
 =head2 _get_commit_date($path)
 
 Figure out the commit date.
+
+=head2 _get_commit_profile($path)
+
+Return the profile name
 
 =head2 _get_author($path)
 
