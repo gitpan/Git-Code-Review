@@ -18,7 +18,7 @@ Git::Code::Review::Tutorial - How to work Git::Code::Review
 
 =head1 VERSION
 
-version 0.9
+version 1.0
 
 =head1 MOTIVATION
 
@@ -138,6 +138,8 @@ Pick defaults to using a randomized ordering for returning commits.  This is int
 reviewing code at the same time.  Not wanting to lock you into our madness, you can re-order the pick using the order which has
 3 options:
 
+=over
+
 =item B<asc> - By date ascending
 
 =item B<desc> - By date descending
@@ -147,6 +149,8 @@ reviewing code at the same time.  Not wanting to lock you into our madness, you 
 To specify you'd like the earliest available commit, use:
 
     $ git-code-review pick --order asc
+
+=back
 
 =head3 Approval
 

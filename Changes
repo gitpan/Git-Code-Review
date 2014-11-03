@@ -1,9 +1,76 @@
 ==================================================
-Changes from 2013-10-29 00:00:00 +0000 to present.
+Changes from 2013-11-03 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 0.9 at 2014-10-29 18:19:19 +0000
+version 1.0 at 2014-11-03 09:46:49 +0000
+----------------------------------------
+
+  Change: 5ef6a2a1172ae008dedcd40c8857ee19bb531405
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-11-03 10:46:42 +0000
+
+    POD Updates for version 1.0 
+
+  Change: 747fdcf5c104dbd5dfe66a0dbc2e73edfcbbdfba
+  Author: Brad Lhotsky <brad.lhotsky@gmail.com>
+  Date : 2014-11-03 10:25:47 +0000
+
+    Merge pull request #4 from rgs/configfixes
+
+    Write back the configuration we just read into the %CFG hash 
+
+  Change: 2fd0df44096888ffded35bf24b60abe3ffae066f
+  Author: Brad Lhotsky <brad.lhotsky@gmail.com>
+  Date : 2014-11-03 10:25:09 +0000
+
+    Merge pull request #3 from rgs/docfixes
+
+    POD syntax fixes 
+
+  Change: d0f3e3215532b1a6a5ddb6aac9677542a895fb35
+  Author: Rafael Garcia-Suarez <rgs@consttype.org>
+  Date : 2014-10-31 14:14:24 +0000
+
+    Write back the configuration we just read into the %CFG hash
+
+    This was not done, so in this module only the configuration value of
+    'editor' was ever set. Notably, the 'user' configuration setting was
+    ignored. 
+
+  Change: 5939716c8f437a0b8ac0fa3f312cb4507c039c36
+  Author: Rafael Garcia-Suarez <rgs@consttype.org>
+  Date : 2014-10-31 13:56:10 +0000
+
+    POD syntax fixes
+
+    This should allow to regenerate Tutorial.mkdn without the disgracious
+    section "POD ERRORS" at the end. 
+
+  Change: fbc1663782ac53618f08b06e46865690ba6d501f
+  Author: Brad Lhotsky <brad.lhotsky@gmail.com>
+  Date : 2014-10-30 10:56:58 +0000
+
+    Merge pull request #2 from rgs/master
+
+    Fix several places that make use of profiles 
+
+  Change: 11b9a7966c512eeb53645a715372fd7d01e6fe94
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-10-29 19:20:05 +0000
+
+    Archive the 0.9 release. 
+
+  Change: bc116c5f91d69d58dcf6efd402ef44f76e76ee56
+  Author: Rafael Garcia-Suarez <rgs@consttype.org>
+  Date : 2014-10-29 17:17:39 +0000
+
+    Fix several places that make use of profiles
+
+    because gcr_profiles() returns a list of profiles, not a hash 
+
+----------------------------------------
+version 0.9 at 2014-10-29 17:48:46 +0000
 ----------------------------------------
 
   Change: 0a87043a50a17f526c90c58b71e73f1a5e11aba3

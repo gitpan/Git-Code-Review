@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '0.9'; # VERSION
+our $VERSION = '1.0'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -162,6 +162,8 @@ sub gcr_config {
             next unless @configs;
             $_config{$sub} = @configs > 1 ? $merge->merge(@configs) : $configs[0];
         }
+
+        %CFG = %_config;
     }
     return wantarray ? %_config : { %_config };
 }
@@ -430,7 +432,8 @@ sub gcr_change_profile {
     }
 
     # Validate Profile
-    my %profiles = gcr_profiles();
+    my %profiles;
+    @profiles{gcr_profiles()} = ();
     if(!exists $profiles{$profile}) {
         output({stderr=>1,color=>"red"}, "Profile '$profile' doesn't exist. (Available: " . join(', ', sort keys %profiles));
         exit 1;
@@ -748,7 +751,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 0.9
+version 1.0
 
 =head1 FUNCTIONS
 

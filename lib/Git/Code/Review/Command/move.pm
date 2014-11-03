@@ -58,7 +58,7 @@ Git::Code::Review::Command::move - Move a commit from one profile to another
 
 =head1 VERSION
 
-version 0.9
+version 1.0
 
 =head1 AUTHOR
 
