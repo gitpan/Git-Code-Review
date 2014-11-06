@@ -8,6 +8,7 @@ README.mkdn
 bin/git-code-review
 dist.ini
 lib/Git/Code/Review.pm
+lib/Git/Code/Review/Command/cleanup.pm
 lib/Git/Code/Review/Command/comment.pm
 lib/Git/Code/Review/Command/fixed.pm
 lib/Git/Code/Review/Command/info.pm

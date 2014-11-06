@@ -46,6 +46,7 @@ sub execute {
         '=*'x40,
     );
     output({clear=>1},@data);
+    debug_var({gcr_commit_info($sha1)});
 
     my @log_options = (qw(--reverse -F -S), $sha1);
     my $logs = $audit->log(@log_options);
@@ -100,7 +101,7 @@ Git::Code::Review::Command::show - Quick overview of the History for the Commmit
 
 =head1 VERSION
 
-version 1.0
+version 1.1
 
 =head1 AUTHOR
 

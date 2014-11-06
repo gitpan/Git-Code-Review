@@ -4,12 +4,13 @@ use warnings;
 
 # this test was generated with Dist::Zilla::Plugin::Test::Compile 2.043
 
-use Test::More  tests => 20 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
+use Test::More  tests => 21 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 
 
 my @module_files = (
     'Git/Code/Review.pm',
+    'Git/Code/Review/Command/cleanup.pm',
     'Git/Code/Review/Command/comment.pm',
     'Git/Code/Review/Command/fixed.pm',
     'Git/Code/Review/Command/info.pm',

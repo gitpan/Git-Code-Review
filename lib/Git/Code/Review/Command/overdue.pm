@@ -111,7 +111,7 @@ Git::Code::Review::Command::overdue - Report overdue commits
 
 =head1 VERSION
 
-version 1.0
+version 1.1
 
 =head1 AUTHOR
 

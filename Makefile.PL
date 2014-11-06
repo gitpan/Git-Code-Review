@@ -32,6 +32,7 @@ my %WriteMakefileArgs = (
     "File::Temp" => 0,
     "Getopt::Long" => 0,
     "Git::Repository" => 0,
+    "Git::Repository::Plugin::Log" => 0,
     "Hash::Merge" => 0,
     "JIRA::Client" => 0,
     "MIME::Lite" => 0,
@@ -55,7 +56,7 @@ my %WriteMakefileArgs = (
     "Test::More" => 0,
     "Test::Perl::Critic" => 0
   },
-  "VERSION" => "1.0",
+  "VERSION" => "1.1",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -73,6 +74,7 @@ my %FallbackPrereqs = (
   "File::Temp" => 0,
   "Getopt::Long" => 0,
   "Git::Repository" => 0,
+  "Git::Repository::Plugin::Log" => 0,
   "Hash::Merge" => 0,
   "IO::Handle" => 0,
   "IPC::Open3" => 0,

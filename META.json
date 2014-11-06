@@ -38,6 +38,7 @@
             "File::Temp" : "0",
             "Getopt::Long" : "0",
             "Git::Repository" : "0",
+            "Git::Repository::Plugin::Log" : "0",
             "Hash::Merge" : "0",
             "JIRA::Client" : "0",
             "MIME::Lite" : "0",
@@ -79,7 +80,7 @@
          "web" : "https://github.com/reyjrar/Git-Code-Review"
       }
    },
-   "version" : "1.0",
+   "version" : "1.1",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -307,6 +308,17 @@
             "version" : "5.020"
          },
          {
+            "class" : "Dist::Zilla::Plugin::Prereqs",
+            "config" : {
+               "Dist::Zilla::Plugin::Prereqs" : {
+                  "phase" : "runtime",
+                  "type" : "requires"
+               }
+            },
+            "name" : "Prereqs",
+            "version" : "5.020"
+         },
+         {
             "class" : "Dist::Zilla::Plugin::CheckPrereqsIndexed",
             "name" : "CheckPrereqsIndexed",
             "version" : "0.012"
@@ -430,7 +442,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "release-1.0",
+                  "tag" : "release-1.1",
                   "tag_format" : "release-%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"
