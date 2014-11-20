@@ -102,7 +102,7 @@ Git::Code::Review::Command::fixed - Mark a commit previously concerned with appr
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 AUTHOR
 

@@ -58,6 +58,7 @@ sub execute {
 
     # Git Log Options
     my @options = (
+        '--no-merges',                  # No merge commits
         q{--pretty=format:%H %ci},      # output formatting
         "--since=$opt->{since}",        # Timeframe
         "--until=$opt->{until}",        # Timeframe
@@ -251,7 +252,7 @@ Git::Code::Review::Command::select - Perform commit selection
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 AUTHOR
 

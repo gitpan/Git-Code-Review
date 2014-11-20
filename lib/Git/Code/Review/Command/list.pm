@@ -71,7 +71,7 @@ sub execute {
             next if keys %SHOW && !exists $SHOW{$commit->{state}};
 
             my $color = gcr_state_color($commit->{state});
-            output({indent=>1,color=>$color}, join("\t",
+            output({indent=>1,color=>$color,data=>1}, join("\t",
                     $commit->{profile},
                     $commit->{state},
                     $commit->{date},
@@ -115,7 +115,7 @@ Git::Code::Review::Command::list - Quick overview of the Audit Directory
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 AUTHOR
 

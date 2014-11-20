@@ -31,7 +31,7 @@ my %ACTIONS = (
 my @_incomplete;
 foreach my $action (keys %LABELS) {
     next if exists $ACTIONS{$action};
-    debug("PICK|$action - Missing Action, but have label.");
+    debug("PICK|$action - Missing Action, but have label.") unless index($action,'_') == 0;
     push @_incomplete, $action;
 }
 delete $ACTIONS{$_} for @_incomplete;
@@ -242,7 +242,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 AUTHOR
 

@@ -1,9 +1,100 @@
 ==================================================
-Changes from 2013-11-06 00:00:00 +0000 to present.
+Changes from 2013-11-20 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.1 at 2014-11-06 12:21:55 +0000
+version 1.2 at 2014-11-20 21:47:55 +0000
+----------------------------------------
+
+  Change: e768e2b188ea05ad3e5238bd1e99533e64222c11
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-11-20 22:47:41 +0000
+
+    Version tagged for 1.2 release. 
+
+  Change: efd1a36edc44833d841ce08837c15848b3abe39e
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-11-20 22:47:16 +0000
+
+    Archive of the 1.1 release 
+
+  Change: 1034aabb26a66f2719d03cff516560e799767d8c
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-11-20 22:44:52 +0000
+
+    Fix bug with die-ing too soon. 
+
+  Change: 0d6b3815ca301753ba620d6382a7265ec05ab80a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 22:37:37 +0000
+
+    Added new function to allow polling IMAP mailboxee for replies to the
+    concerns commands. 
+
+  Change: f81763e662e6ef3d1a9055d3c42b5206ff73fa00
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 22:37:15 +0000
+
+    Set the notification name in the meta data. 
+
+  Change: 93b9d71a94b8a6bcf9986bb403da605889a31dbc
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 22:35:15 +0000
+
+    Bug squashing in 'show' and the change_state function. 
+
+  Change: f735fa22f154d7dc23d922bfdfe58660fcd06ba8
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 21:46:15 +0000
+
+    Removing the cleanup tool as it was a temporary thing. 
+
+  Change: 36f3846d8b5e26d5d150b3c64cdc4ba1b1a725f0
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 21:40:29 +0000
+
+    Improve the output of the overdue command. 
+
+  Change: d72210a1d687618956fb78e6c45fce03b5da55dc
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 21:08:13 +0000
+
+    Fix bug where comments cause patches to throw exceptions. 
+
+  Change: 72cd4156095f75ff3473f13f4e90826eb544b43f
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 13:58:16 +0000
+
+    Cleanup noisy debug output so that we only get useful information 
+
+  Change: 7c407729f5fe36c33842150b46c1f7232254f4cd
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-20 13:56:52 +0000
+
+    Make use of the --notify in the overdue command by setting
+    environment variables to disable the email and jira reporting. 
+
+  Change: ffacb52e739e147084cd977de0d9c25bdf3d535a
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-19 17:43:02 +0000
+
+    Overdue report will now include commits in concerns. 
+
+  Change: a479de515d4718902c18a709424e357361ef5cb8
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-11-17 16:24:19 +0000
+
+    Minor fixes + list
+
+    - use data option for commit listings to file + select
+
+    - Do not select merge commits + show
+
+    - reset the source repo before trying to display the commit +
+    gcr_view_commit refreshes the source repo 
+
+----------------------------------------
+version 1.1 at 2014-11-06 12:04:29 +0000
 ----------------------------------------
 
   Change: 96b651aab2f37d995302db92c5487bc4edc90f5d

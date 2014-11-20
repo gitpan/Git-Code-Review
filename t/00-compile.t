@@ -10,12 +10,12 @@ use Test::More  tests => 21 + ($ENV{AUTHOR_TESTING} ? 1 : 0);
 
 my @module_files = (
     'Git/Code/Review.pm',
-    'Git/Code/Review/Command/cleanup.pm',
     'Git/Code/Review/Command/comment.pm',
     'Git/Code/Review/Command/fixed.pm',
     'Git/Code/Review/Command/info.pm',
     'Git/Code/Review/Command/init.pm',
     'Git/Code/Review/Command/list.pm',
+    'Git/Code/Review/Command/mailhandler.pm',
     'Git/Code/Review/Command/move.pm',
     'Git/Code/Review/Command/overdue.pm',
     'Git/Code/Review/Command/pick.pm',

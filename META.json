@@ -33,6 +33,10 @@
             "Config::Auto" : "0",
             "Config::GitLike" : "0",
             "Cwd" : "0",
+            "DateTime::Format::Mail" : "0",
+            "Email::Address" : "0",
+            "Email::MIME" : "0",
+            "Email::Simple" : "0",
             "File::Basename" : "0",
             "File::Spec" : "0",
             "File::Temp" : "0",
@@ -42,7 +46,9 @@
             "Hash::Merge" : "0",
             "JIRA::Client" : "0",
             "MIME::Lite" : "0",
+            "Mail::IMAPClient" : "0",
             "Module::Pluggable" : "0",
+            "Mojo::DOM" : "0",
             "POSIX" : "0",
             "Sub::Exporter" : "0",
             "Sys::Hostname" : "0",
@@ -80,7 +86,7 @@
          "web" : "https://github.com/reyjrar/Git-Code-Review"
       }
    },
-   "version" : "1.1",
+   "version" : "1.2",
    "x_Dist_Zilla" : {
       "perl" : {
          "version" : "5.018002"
@@ -442,7 +448,7 @@
                "Dist::Zilla::Plugin::Git::Tag" : {
                   "branch" : null,
                   "signed" : 0,
-                  "tag" : "release-1.1",
+                  "tag" : "release-1.2",
                   "tag_format" : "release-%v",
                   "tag_message" : "v%v",
                   "time_zone" : "local"

@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '1.1'; # VERSION
+our $VERSION = '1.2'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -159,12 +159,11 @@ sub gcr_config {
             $_config{$gitrc{$k}} = $v;
         }
 
-        foreach my $sub (qw(notification)) {
+        foreach my $sub (qw(notification mailhandler)) {
             my @files = (
                 File::Spec->catfile($AUDITDIR,'.code-review',"${sub}.config"),
                 File::Spec->catfile($AUDITDIR,qw(.code-review profiles),gcr_profile(exists => 0),"${sub}.config")
             );
-            debug("attempting to config for $sub");
             my @configs = ();
             foreach my $file (@files) {
                 next unless -f $file;
@@ -174,6 +173,7 @@ sub gcr_config {
                 };
             }
             next unless @configs;
+            debug("gcr_config() - loaded $sub configuration");
             $_config{$sub} = @configs > 1 ? $merge->merge(@configs) : $configs[0];
         }
 
@@ -223,9 +223,10 @@ sub gcr_mkdir {
     my $dir = $AUDITDIR;
     foreach my $sub (@path) {
         $dir = File::Spec->catdir($dir,$sub);
-        mkdir($dir,0755) unless -d $dir;
+        next if -d $dir;
+        mkdir($dir,0755);
+        debug("gcr_mkdir() created $dir");
     }
-    debug("audit_mkdir() created $dir");
     return $dir;
 }
 
@@ -323,7 +324,7 @@ sub gcr_commit_info {
     # Object can be a sha1, path in the repo, or patch
     my ($_line,$_sub) = (caller 1)[2,3];
 
-    my @matches = $audit->run('ls-files', "*$object*");
+    my @matches = grep /\.patch$/, $audit->run('ls-files', "*$object*");
     if( @matches != 1 ) {
         die sprintf('gcr_commit_info("%s") %s commit object: %s line %d', $object, (@matches > 1 ? 'ambiguous' : 'unknown'), $_sub, $_line);
     }
@@ -398,6 +399,7 @@ sub gcr_open_editor {
 
 sub gcr_view_commit {
     my ($commit) = @_;
+    gcr_reset('source');
     $commit->{review_time} = gcr_open_editor(readonly => File::Spec->catfile($AUDITDIR,$commit->{current_path}));
 }
 
@@ -544,7 +546,7 @@ sub gcr_change_state {
         verbose("+ Moving from $orig to $target : $info->{message}");
         debug($audit->run('mv', $orig, $target));
         my %details = (
-            profile        => gcr_profile(),
+            profile        => exists $commit->{profile} ? $commit->{profile} : gcr_profile(),
             commit         => $commit->{sha1},
             commit_date    => $commit->{date},
             state_previous => $prev,
@@ -801,7 +803,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 1.1
+version 1.2
 
 =head1 FUNCTIONS
 
