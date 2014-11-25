@@ -13,6 +13,9 @@ use YAML;
 my $AUDITDIR = gcr_dir();
 my %CFG = gcr_config();
 
+sub command_names {
+    return qw(approve fixed);
+}
 sub opt_spec {
     return (
         #    ['noop',       "Take no recorded actions."],
@@ -23,7 +26,11 @@ sub description {
     my $DESC = <<"    EOH";
 
     This command allows reviewers to mark a commit previously flagged as a concern
-    to the approved status.  All necessary information will be prompted from the user.
+    to the approved status.
+
+    Aliased as: approve, fixed
+
+    All necessary information will be prompted from the user.
     EOH
     $DESC =~ s/^[ ]{4}//mg;
     return $DESC;
@@ -102,7 +109,7 @@ Git::Code::Review::Command::fixed - Mark a commit previously concerned with appr
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 AUTHOR
 

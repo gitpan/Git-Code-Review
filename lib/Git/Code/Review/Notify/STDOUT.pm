@@ -22,7 +22,7 @@ Git::Code::Review::Notify::STDOUT - Notification plugin that outputs the message
 
 =head1 VERSION
 
-version 1.2
+version 1.3
 
 =head1 AUTHOR
 
