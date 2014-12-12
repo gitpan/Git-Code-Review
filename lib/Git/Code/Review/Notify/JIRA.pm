@@ -65,8 +65,8 @@ sub send {
     # Ticket Creation
     verbose({color=>'green'}, "JIRA Parent Ticket: $config{'jira-title'}");
     # Should we do the thing?
-    if( exists $ENV{GCR_NOTIFY_JIRA_DISABLED} && $ENV{GCR_NOTIFY_JIRA_DISABLED} ){
-        output({color=>'cyan',sticky=>1}, "JIRA methods disabled by environment variable, GCR_NOTIFY_JIRA_DISABLED.");
+    unless( exists $ENV{GCR_NOTIFY_ENABLED} ) {
+        output({color=>'cyan',sticky=>1}, "JIRA methods disabled, use --notify to enable.");
         return;
     }
 
@@ -241,7 +241,7 @@ Git::Code::Review::Notify::JIRA - Notification by email
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

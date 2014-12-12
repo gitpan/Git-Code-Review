@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use CLI::Helpers qw(:all);
+use Git::Code::Review::Notify qw(notify_config);
 use Git::Code::Review::Utilities qw(:all);
 use Git::Code::Review -command;
 use YAML;
@@ -39,6 +40,12 @@ sub execute {
     my $profile = gcr_profile();
     output({color=>'cyan'},"Git::Code::Review Config for (profile:$profile):");
     output(Dump \%config);
+
+    foreach my $section (qw(select overdue)) {
+        verbose({color=>'cyan'}, "Notifcation settings for $section");
+        my %notify = notify_config($section);
+        verbose(Dump \%notify);
+    }
 }
 
 1;
@@ -55,7 +62,7 @@ Git::Code::Review::Command::info - Quick overview of the Audit
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

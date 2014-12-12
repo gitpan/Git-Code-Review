@@ -78,24 +78,27 @@ sub send {
         else {
             $msg->data($data);
         }
-        # Print out the happy email
-        debug($msg->as_string);
-
         # Messaging
-        if( exists $ENV{GCR_NOTIFY_EMAIL_DISABLED} && $ENV{GCR_NOTIFY_EMAIL_DISABLED} ){
-            output({color=>'cyan',sticky=>1}, "Sending of email disable by environment variable, GCR_NOTIFY_EMAIL_DISABLED.");
-            return;
+        if ( exists $ENV{GCR_NOTIFY_ENABLED} ){
+            verbose({color=>'cyan'}, "Sending notification email.");
+            my $rc = eval {
+                $msg->send();
+                1;
+            };
+            if($rc == 1) {
+                output({color=>'green'}, "Notification email sent.");
+            }
         }
-        verbose({color=>'cyan'}, "Sending notification email.");
-        my $rc = eval {
-            $msg->send();
-            1;
-        };
-        if($rc == 1) {
-            output({color=>'green'}, "Notification email sent.");
+        else {
+            debug($msg->as_string);
+            output({color=>'cyan',sticky=>1}, "Sending of email disabled, use --notify to enable.");
+            verbose({indent=>1,color=>'green',sticky=>1}, "=> Email would go to: " . join(', ',
+                    (ref $config{to} eq 'ARRAY' ? @{ $config{to} } : $config{to}),
+                    (exists $config{cc} ? (ref $config{cc} eq 'ARRAY' ? @{ $config{cc} } : $config{cc}) : ()),
+                )
+            );
         }
     }
-
 }
 
 1;
@@ -112,7 +115,7 @@ Git::Code::Review::Notify::Email - Notification by email
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

@@ -3,7 +3,7 @@ package Git::Code::Review::Utilities;
 use strict;
 use warnings;
 
-our $VERSION = '1.3'; # VERSION
+our $VERSION = '1.4'; # VERSION
 
 # Utility Modules
 use CLI::Helpers qw(:all);
@@ -338,6 +338,7 @@ sub gcr_commit_info {
         author       => _get_author($matches[0]),
         profile      => _get_commit_profile($matches[0]),
         reviewer     => $CFG{user},
+        select_date  => _get_commit_select_date($matches[0]),
         source_repo  => gcr_origin('source'),
         audit_repo   => gcr_origin('audit'),
         sha1         => _get_sha1(basename($matches[0])),
@@ -742,6 +743,22 @@ sub _get_commit_date {
     return $ISO;
 }
 
+sub _get_commit_select_date {
+    my ($current_path) = @_;
+
+    my $audit = gcr_repo();
+    my @log_options = qw(--reverse -F --grep);
+    push @log_options, "state: select", '--', sprintf('**%s', basename($current_path));
+
+    my $logs = $audit->log(@log_options);
+    my $log = $logs->next;      # Only care about the first
+
+    return unless defined $log;
+    my @lt = localtime($log->author_localtime);
+    return strftime('%F', @lt);
+}
+
+
 sub _get_commit_profile {
     my ($path) = @_;
 
@@ -803,7 +820,7 @@ Git::Code::Review::Utilities - Tools for performing code review using Git as the
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 FUNCTIONS
 
@@ -861,7 +878,7 @@ Returns 1 if the commit is in the audit already, or 0 otehrwise
 =head2 gcr_commit_info($sha1 | $partial_sha1 | $path)
 
 Retrieves all relevant Git::Code::Review details on the commit
-that mataches the string passed in.
+that matches the string passed in.
 
 =head2 gcr_commit_profile(sha1)
 
@@ -942,6 +959,10 @@ Review history to find the last profile this commit was a part of.  Takes a sha1
 =head2 _get_review_path($path)
 
 Figure out the review path from a file path.
+
+=head2 _get_commit_date($path)
+
+Figure out the commit date.
 
 =head2 _get_commit_date($path)
 

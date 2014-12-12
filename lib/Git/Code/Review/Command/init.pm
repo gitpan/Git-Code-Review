@@ -139,7 +139,7 @@ Git::Code::Review::Command::init - Initialization hooks for git-code-review comm
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

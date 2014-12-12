@@ -5,7 +5,10 @@ use CLI::Helpers qw(:output);
 sub send {
     shift @_ if ref $_[0] || $_[0] eq __PACKAGE__;
     my %config = @_;
-    output({data=>1}, $config{message});
+    my $message = delete $config{message};
+    verbose({color=>'cyan'}, "Config containted: " . join(', ', sort keys %config));
+    debug_var(\%config);
+    output({data=>1}, $message);
 }
 
 1;
@@ -22,7 +25,7 @@ Git::Code::Review::Notify::STDOUT - Notification plugin that outputs the message
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

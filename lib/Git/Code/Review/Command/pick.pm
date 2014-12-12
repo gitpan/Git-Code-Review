@@ -6,7 +6,7 @@ use warnings;
 use CLI::Helpers qw(:all);
 use Git::Code::Review::Utilities qw(:all);
 use Git::Code::Review -command;
-use Git::Code::Review::Notify;
+use Git::Code::Review::Notify qw(notify_enabled);
 
 # Globals
 my $AUDITDIR = gcr_dir();
@@ -67,6 +67,7 @@ sub execute {
     my($cmd,$opt,$args) = @_;
 
     die "Not initialized, run git-code-review init!" unless gcr_is_initialized();
+    notify_enabled();
 
     # Grab the audit repo handle, reset
     my $audit = gcr_repo();
@@ -197,7 +198,7 @@ sub concerns {
     my ($commit) = @_;
 
     my %reasons = (
-        incorrect => "Calculations are incorect.",
+        incorrect => "Calculations are incorrect.",
         unclear   => "Code is not clear, requires more information from the author.",
         other     => 'Other',
     );
@@ -242,7 +243,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

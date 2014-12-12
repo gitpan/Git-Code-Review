@@ -18,7 +18,7 @@ Git::Code::Review::Tutorial - How to work Git::Code::Review
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 MOTIVATION
 
@@ -88,7 +88,7 @@ Editing profiles is simple:
 
     $ git-code-review profile --edit team_a
 
-From there you can configure settings for the selection or notifcation.
+From there you can configure settings for the selection or notification.
 
 =head2 Selection
 

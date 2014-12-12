@@ -5,19 +5,19 @@ use warnings;
 
 use CLI::Helpers qw(:all);
 use File::Basename;
+use Config::GitLike;
 use Git::Code::Review::Utilities qw(:all);
-use Git::Code::Review::Notify;
+use Git::Code::Review::Notify qw(notify);
 use Git::Code::Review -command;
 use POSIX qw(strftime);
 use Text::Wrap qw(fill);
 use Time::Local;
 
-my $default_age = 7;
+my $default_age = 2;
 sub opt_spec {
     return (
-           ['age:i',    "Age of commits in days to consider overdue default: $default_age", { default => $default_age } ],
-           ['all',      "Run report for all profiles." ],
-           ['notify',   "In addition to printing the list, invoke the Notify chain."],
+           ['age|days:i', "Age of commits in days to consider overdue default: $default_age", { default => $default_age } ],
+           ['all',        "Run report for all profiles." ],
     );
 }
 
@@ -43,8 +43,8 @@ sub execute {
     push @ls, $opt->{all} ? '**.patch' : sprintf('%s/**.patch', $profile);
 
     # Look for commits that aren't approved and older than X days
-    my @overdue = sort { $a->{date} cmp $b->{date} }
-                    grep { days_old($_->{date}) >= $opt->{age} }
+    my @overdue = sort { $a->{select_date} cmp $b->{select_date} }
+                    grep { days_old($_->{select_date}) >= $opt->{age} }
                     map { $_=gcr_commit_info(basename $_) }
                     grep !/Approved/, $audit->run(@ls);
 
@@ -52,11 +52,12 @@ sub execute {
         # Calculate how many are overdue by profile
         my %profiles =  map { $_ => { total => 0 } } $opt->{all} ? gcr_profiles() : $profile;
         my %current_concerns = ();
+        my %contacts = ();
         foreach my $commit (@overdue) {
             my $p = exists $commit->{profile} && $commit->{profile} ? $commit->{profile} : '__UNKNOWN__';
             $profiles{$p} ||= {total => 0};
             $profiles{$p}->{total}++;
-            my $month = join('-', (split /[.\-]/, $commit->{date})[0,1]);
+            my $month = join('-', (split '-', $commit->{select_date})[0,1]);
             $profiles{$p}->{$month} ||= 0;
             $profiles{$p}->{$month}++;
             $current_concerns{$commit->{sha1}} = 1 if $commit->{state} eq 'concerns';
@@ -108,21 +109,40 @@ sub execute {
                 },
             };
         }
-        # Disable some notifications
-        foreach my $remote (qw(JIRA EMAIL)) {
-            $ENV{"GCR_NOTIFY_${remote}_DISABLED"} = 1 unless $opt->{notify};
-        }
 
+        # Grab contact information
+        foreach my $profile (keys %profiles) {
+            my @configs = (
+                File::Spec->catfile(gcr_dir(),'.code-review','profiles',$profile,'notification.config'),
+                File::Spec->catfile(gcr_dir(),'.code-review','notification.config')
+            );
+            my %c = ();
+            foreach my $config_file(@configs) {
+                next unless -f $config_file;
+                my $config;
+                my $rc = eval {
+                    $config = Config::GitLike->load_file($config_file);
+                    1;
+                };
+                next unless $rc == 1;
+                next unless exists $config->{'template.select.to'};
+                $c{$_} = 1 for (ref $config->{'template.select.to'} eq 'ARRAY' ? @{ $config->{'template.select.to'} }
+                                                                               : $config->{'template.select.to'}
+                );
+            }
+            $contacts{$profile} = scalar(keys %c) ? [ sort keys %c ] : [qw(NONE)];
+        }
         output({color=>'cyan',clear=>1},
             '=*'x40,
             sprintf("Overdue commits (older than %d days)", $opt->{age}),
             '=*'x40,
         );
-        Git::Code::Review::Notify::notify(overdue => {
+        notify(overdue => {
             options  => $opt,
             profiles => \%profiles,
             commits  => \@overdue,
             concerns => \%concerns,
+            contacts => \%contacts,
         });
     }
     else {
@@ -136,22 +156,22 @@ sub execute {
 }
 
 my $NOW = timelocal(0,0,0,(localtime)[3,4,5]);
-my %_Ages;
+my %_Ages = ();
 sub days_old {
     my ($date) = @_;
 
     return $_Ages{$date} if exists $_Ages{$date};
 
-    my @parts = reverse split /[\-.]/, $date;
-    # Don't handle weird shit
-    return unless @parts == 3;
-
-    # Month needs to be 0 based, not 1 based.
+    # Get Y, M, D parts.
+    my @parts = reverse split '-', $date;
+    # Decrement Month
     $parts[1]--;
+
     my $epoch = timelocal(0,0,0,@parts);
     my $diff  = $NOW - $epoch;
+    my $days_old = int($diff / 86400);
 
-    return $_Ages{$date} = int($diff / 86400);
+    return $_Ages{$date} = $days_old;
 }
 
 1;
@@ -168,7 +188,7 @@ Git::Code::Review::Command::overdue - Report overdue commits
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

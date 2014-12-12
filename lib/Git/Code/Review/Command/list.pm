@@ -115,7 +115,7 @@ Git::Code::Review::Command::list - Quick overview of the Audit Directory
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 

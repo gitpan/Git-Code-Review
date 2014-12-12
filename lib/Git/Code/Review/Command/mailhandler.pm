@@ -299,7 +299,7 @@ Git::Code::Review::Command::mailhandler - Manage replies to the code review mail
 
 =head1 VERSION
 
-version 1.3
+version 1.4
 
 =head1 AUTHOR
 
