@@ -265,7 +265,7 @@ Git::Code::Review::Command::report - Generate an Audit Report
 
 =head1 VERSION
 
-version 1.4
+version 1.5
 
 =head1 AUTHOR
 

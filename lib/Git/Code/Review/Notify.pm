@@ -39,7 +39,7 @@ if( !$_OPTIONS_PARSED ) {
         'notify'
     );
 }
-notify_enbled() if $_OPTIONS{notify} && $_OPTIONS{notify};
+notify_enabled() if $_OPTIONS{notify} && $_OPTIONS{notify};
 
 # Configure the Templates
 my @TEMPLATE_DIR = ( gcr_mkdir('.code-review','templates') );
@@ -398,7 +398,7 @@ Git::Code::Review::Notify - Notification framework
 
 =head1 VERSION
 
-version 1.4
+version 1.5
 
 =head1 AUTHOR
 
