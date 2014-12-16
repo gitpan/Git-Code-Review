@@ -1,9 +1,62 @@
 ==================================================
-Changes from 2013-12-15 00:00:00 +0000 to present.
+Changes from 2013-12-16 00:00:00 +0000 to present.
 ==================================================
 
 ----------------------------------------
-version 1.5 at 2014-12-15 12:47:43 +0000
+version 1.6 at 2014-12-16 15:27:26 +0000
+----------------------------------------
+
+  Change: 0e068e546fb39ab71e654b9b90979a916b1bac3b
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-12-16 16:21:52 +0000
+
+    Cache commit info for the run of the script. Remove caller()
+    functions as that information is less useful than expected. 
+
+  Change: d8992c95e60e044cae0aa7008f9ad3e035049e58
+  Author: Brad Lhotsky <brad.lhotsky@booking.com>
+  Date : 2014-12-16 16:20:04 +0000
+
+    Add --critical to overdue to toggle mail headers for importance and
+    priority. Update the rest of the notifications to take advantage of
+    this new flag. 
+
+  Change: 288acd4a8e0a53a0e75caef13a89c579119fb0ae
+  Author: Brad Lhotsky <brad.lhotsky@gmail.com>
+  Date : 2014-12-16 11:20:06 +0000
+
+    Merge pull request #8 from seveas/master
+
+    Fix 'hostanme' typo 
+
+  Change: 7537df7f3a44da84a13501ee596fc1c2590454a9
+  Author: Dennis Kaarsemaker <dennis@kaarsemaker.net>
+  Date : 2014-12-16 11:17:33 +0000
+
+    Fix 'hostanme' typo 
+
+  Change: 3f57b8ebe0376a0412da8eb968ae3a068a96519e
+  Author: Brad Lhotsky <brad.lhotsky@gmail.com>
+  Date : 2014-12-16 10:35:46 +0000
+
+    Merge pull request #7 from rgs/master
+
+    Better error handling for the profile command 
+
+  Change: adc62afe6e37a89a8fb4c5c6579fa6ebe9be5f0b
+  Author: Rafael Garcia-Suarez <rgs@consttype.org>
+  Date : 2014-12-16 10:16:19 +0000
+
+    Better error handling for the profile command 
+
+  Change: 1b5abfbdae24709a9603510a05c00fcfe90172b2
+  Author: Brad Lhotsky <brad@divisionbyzero.net>
+  Date : 2014-12-15 13:48:57 +0000
+
+    Archive of the 1.5 release. 
+
+----------------------------------------
+version 1.5 at 2014-12-15 12:45:36 +0000
 ----------------------------------------
 
   Change: 5242bf1e904138bb7128661c612f3d61b90ff55b

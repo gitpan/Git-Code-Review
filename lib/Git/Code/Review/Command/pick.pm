@@ -210,6 +210,7 @@ sub concerns {
 
     # Do notify by email
     Git::Code::Review::Notify::notify(concerns => {
+        priority => 'high',
         commit => $commit,
         reason => {
             short   => $reason,
@@ -243,7 +244,7 @@ Git::Code::Review::Command::pick - Allows reviewers to select a commit for audit
 
 =head1 VERSION
 
-version 1.5
+version 1.6
 
 =head1 AUTHOR
 

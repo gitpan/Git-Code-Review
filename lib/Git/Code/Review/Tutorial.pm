@@ -18,7 +18,7 @@ Git::Code::Review::Tutorial - How to work Git::Code::Review
 
 =head1 VERSION
 
-version 1.5
+version 1.6
 
 =head1 MOTIVATION
 

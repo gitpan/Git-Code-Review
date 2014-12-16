@@ -241,7 +241,7 @@ Git::Code::Review::Notify::JIRA - Notification by email
 
 =head1 VERSION
 
-version 1.5
+version 1.6
 
 =head1 AUTHOR
 

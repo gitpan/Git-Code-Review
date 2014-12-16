@@ -106,6 +106,7 @@ sub execute {
             output({stderr=>1,color=>'red'}, "Unknown profile '$profile', valid profiles: " .
                     join(', ', sort keys %profiles)
             );
+            exit 1;
         }
     }
     elsif(exists $opt->{add}) {
@@ -119,6 +120,10 @@ sub execute {
         foreach my $file ( keys %files ) {
             push @files_to_edit, _default_file($profile,$file);
         }
+    }
+    else {
+        output({stderr=>1,color=>'red'}, "No action specified, nothing to do.");
+        exit 1;
     }
 
     # Edit files in the list.
@@ -187,7 +192,7 @@ Git::Code::Review::Command::profile - Manage profiles for the code selection
 
 =head1 VERSION
 
-version 1.5
+version 1.6
 
 =head1 AUTHOR
 

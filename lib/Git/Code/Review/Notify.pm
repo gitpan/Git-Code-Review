@@ -92,6 +92,8 @@ sub notify {
         exists $opts->{commit} && exists $opts->{commit}{author} ? (to => $opts->{commit}{author}) : ()
     );
 
+    # Default priority to normal
+    $config{priority} ||= 'normal';
     $Plugins{from} = $config{user} unless exists $Plugins{from};
     my %VARIABLES = (
         %{ $opts },
@@ -398,7 +400,7 @@ Git::Code::Review::Notify - Notification framework
 
 =head1 VERSION
 
-version 1.5
+version 1.6
 
 =head1 AUTHOR
 
